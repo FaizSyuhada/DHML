@@ -39,15 +39,104 @@
             color: #9CA3AF;
             cursor: not-allowed;
         }
+        .side-drawer {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .side-drawer.open {
+            transform: translateX(0);
+        }
+        .overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gray-50">
+    <!-- Mobile Menu Overlay -->
+    <div id="overlay" class="overlay fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+
+    <!-- Side Navigation Drawer -->
+    <nav id="sideDrawer" class="side-drawer fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-purple-400 to-pink-400 rounded-full p-2">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">DMHLH</span>
+                </div>
+                <button onclick="closeSideDrawer()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- User Profile -->
+            <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 mb-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold">ET</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800">En Thong</h3>
+                        <p class="text-sm text-gray-600">Student</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <div class="space-y-2">
+                <a href="student-dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="literacy-modules.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-book w-5"></i>
+                    <span>Literacy Modules</span>
+                </a>
+                <a href="self-assessment.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-clipboard-check w-5"></i>
+                    <span>Self Assessment</span>
+                </a>
+                <a href="mood-tracker.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-heart w-5"></i>
+                    <span>Mood Tracker</span>
+                </a>
+                <a href="ai-chatbot.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-robot w-5"></i>
+                    <span>AI Chatbot</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 bg-purple-50 text-purple-700 rounded-lg">
+                    <i class="fas fa-calendar w-5"></i>
+                    <span>Book Counsellor</span>
+                </a>
+                <a href="forum.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-comments w-5"></i>
+                    <span>Forum</span>
+                </a>
+            </div>
+
+            <!-- Logout -->
+            <div class="absolute bottom-6 left-6 right-6">
+                <button onclick="window.location.href='login.html'" class="flex items-center space-x-3 w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
     <!-- Top Navigation -->
     <div class="bg-white shadow-sm border-b">
         <div class="px-4 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-4">
-                <button onclick="window.location.href='student-dashboard.html'" class="text-gray-600 hover:text-gray-800">
-                    <i class="fas fa-arrow-left text-xl"></i>
+                <button onclick="openSideDrawer()" class="text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-bars text-xl"></i>
                 </button>
                 <div class="flex items-center space-x-2">
                     <i class="fas fa-calendar text-purple-500"></i>
@@ -289,6 +378,19 @@
     </div>
 
     <script>
+        function openSideDrawer() {
+            document.getElementById('sideDrawer').classList.add('open');
+            document.getElementById('overlay').classList.add('show');
+        }
+
+        function closeSideDrawer() {
+            document.getElementById('sideDrawer').classList.remove('open');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        // Close drawer when clicking overlay
+        document.getElementById('overlay').addEventListener('click', closeSideDrawer);
+
         let selectedCounsellor = null;
         let selectedDate = '27';
         let selectedTime = null;
