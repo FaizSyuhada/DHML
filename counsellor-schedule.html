@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Schedule - DMHLH Counsellor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'peach-50': '#FFEADF',
+                        'sky-50': '#EFF8FF',
+                        'soft-pink': '#F8E8F5',
+                        'soft-green': '#E8F5E8',
+                        'soft-yellow': '#FFF8DC',
+                        'soft-purple': '#F0E8FF'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .time-slot {
+            transition: all 0.3s ease;
+        }
+        .time-slot:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .side-drawer {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .side-drawer.open {
+            transform: translateX(0);
+        }
+        .overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Mobile-specific optimizations */
+        .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        /* Smooth interactions on mobile */
+        @media (max-width: 1023px) {
+            .bg-white {
+                transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            }
+
+            .bg-white:active {
+                transform: scale(0.98);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Ensure proper touch spacing */
+            .space-y-3 > * + * {
+                margin-top: 1rem;
+            }
+
+            /* Better button sizing for touch */
+            button {
+                min-height: 44px;
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+
+            /* Prevent zoom on iOS form inputs */
+            select, input {
+                font-size: 16px;
+                padding: 16px 12px;
+            }
+
+            /* Mobile header padding adjustment */
+            .px-4 {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .py-4 {
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+            }
+
+            /* Mobile legend grid improvement */
+            .grid-cols-2 {
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+        }
+
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus states for keyboard navigation */
+        button:focus, select:focus {
+            outline: 2px solid #3B82F6;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Mobile Menu Overlay -->
+    <div id="overlay" class="overlay fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+
+    <!-- Side Navigation Drawer -->
+    <nav id="sideDrawer" class="side-drawer fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-full p-2">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">DMHLH</span>
+                </div>
+                <button onclick="closeSideDrawer()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- User Profile -->
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 mb-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold">SW</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800">Dr. Sarah Wilson</h3>
+                        <p class="text-sm text-gray-600">Clinical Psychologist</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <div class="space-y-2">
+                <a href="counsellor-dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg">
+                    <i class="fas fa-calendar-alt w-5"></i>
+                    <span>My Schedule</span>
+                </a>
+                <a href="counsellor-students.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-users w-5"></i>
+                    <span>My Students</span>
+                </a>
+                <a href="counsellor-referrals.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-exclamation-triangle w-5"></i>
+                    <span>Referrals Queue</span>
+                </a>
+                <a href="counsellor-forum.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-comments w-5"></i>
+                    <span>Forum Moderation</span>
+                </a>
+                <a href="counsellor-reports.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-chart-bar w-5"></i>
+                    <span>Reports</span>
+                </a>
+            </div>
+
+            <!-- Logout -->
+            <div class="absolute bottom-6 left-6 right-6">
+                <button onclick="window.location.href='login.html'" class="flex items-center space-x-3 w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="min-h-screen">
+        <!-- Top Navigation -->
+        <div class="bg-white shadow-sm border-b">
+            <div class="px-4 py-4 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button onclick="openSideDrawer()" class="text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-calendar-alt text-blue-500"></i>
+                        <h1 class="text-xl font-bold text-gray-800">My Schedule</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="showAvailabilityModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all">
+                        <i class="fas fa-clock mr-2"></i>Set Availability
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-4 max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Weekly Schedule</h2>
+                        <p class="text-gray-600">Manage your appointments and availability</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button onclick="previousWeek()" class="p-2 text-gray-600 hover:text-gray-800">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span class="text-lg font-semibold text-gray-800" id="weekRange">Dec 23 - Dec 29, 2024</span>
+                        <button onclick="nextWeek()" class="p-2 text-gray-600 hover:text-gray-800">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center space-x-6 text-sm">
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full">85% utilized</span>
+                        <span class="text-gray-600">Weekly capacity</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full">3 available</span>
+                        <span class="text-gray-600">Open slots</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Calendar View -->
+            <div class="lg:hidden bg-white rounded-3xl shadow-sm overflow-hidden mb-6">
+                <!-- Mobile Calendar Header -->
+                <div class="bg-gray-50 p-4 border-b">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Week View</h3>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="previousWeek()" class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="text-sm font-medium text-gray-600">Dec 23 - 29</span>
+                            <button onclick="nextWeek()" class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Days Header - Horizontal Scroll -->
+                    <div class="overflow-x-auto">
+                        <div class="flex space-x-1 min-w-max pb-2">
+                            <div class="w-16 flex-shrink-0"></div> <!-- Spacer for time column -->
+                            <div class="w-20 flex-shrink-0 text-center">
+                                <div class="text-xs font-medium text-gray-600">Mon</div>
+                                <div class="text-sm font-semibold text-gray-800">23</div>
+                            </div>
+                            <div class="w-20 flex-shrink-0 text-center">
+                                <div class="text-xs font-medium text-gray-600">Tue</div>
+                                <div class="text-sm font-semibold text-gray-800">24</div>
+                            </div>
+                            <div class="w-20 flex-shrink-0 text-center">
+                                <div class="text-xs font-medium text-gray-600">Wed</div>
+                                <div class="text-sm font-semibold text-gray-800">25</div>
+                            </div>
+                            <div class="w-20 flex-shrink-0 text-center">
+                                <div class="text-xs font-medium text-gray-600">Thu</div>
+                                <div class="text-sm font-semibold text-gray-800">26</div>
+                            </div>
+                            <div class="w-20 flex-shrink-0 text-center bg-blue-50 rounded-lg px-1 py-2">
+                                <div class="text-xs font-medium text-blue-600">Fri</div>
+                                <div class="text-sm font-semibold text-blue-700">27</div>
+                                <div class="text-xs text-blue-600">Today</div>
+                            </div>
+                            <div class="w-20 flex-shrink-0 text-center">
+                                <div class="text-xs font-medium text-gray-600">Sat</div>
+                                <div class="text-sm font-semibold text-gray-800">28</div>
+                            </div>
+                            <div class="w-20 flex-shrink-0 text-center">
+                                <div class="text-xs font-medium text-gray-600">Sun</div>
+                                <div class="text-sm font-semibold text-gray-800">29</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Calendar Body - Horizontal Scroll -->
+                <div class="overflow-x-auto max-h-96 overflow-y-auto">
+                    <div class="min-w-max">
+                        <!-- Time Slots -->
+                        
+                        <!-- 9:00 AM -->
+                        <div class="flex border-b border-gray-100">
+                            <div class="w-16 flex-shrink-0 py-4 px-2 text-xs font-medium text-gray-600 bg-gray-50 border-r">
+                                9:00<br>AM
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100 bg-blue-50">
+                                <button onclick="openSessionDetail('ST2024-156', '9:00 AM')" 
+                                        class="w-full h-12 bg-green-500 text-white text-xs rounded px-1 font-medium hover:bg-green-600 transition-colors">
+                                    ST-156<br>Initial
+                                </button>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1"></div>
+                        </div>
+
+                        <!-- 10:00 AM -->
+                        <div class="flex border-b border-gray-100">
+                            <div class="w-16 flex-shrink-0 py-4 px-2 text-xs font-medium text-gray-600 bg-gray-50 border-r">
+                                10:00<br>AM
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100">
+                                <button onclick="openSessionDetail('ST2024-234', '10:00 AM')" 
+                                        class="w-full h-12 bg-yellow-500 text-white text-xs rounded px-1 font-medium hover:bg-yellow-600 transition-colors">
+                                    ST-234<br>Follow
+                                </button>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100">
+                                <button onclick="openSessionDetail('ST2024-078', '10:00 AM')" 
+                                        class="w-full h-12 bg-green-500 text-white text-xs rounded px-1 font-medium hover:bg-green-600 transition-colors">
+                                    ST-078<br>Regular
+                                </button>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100 bg-blue-50">
+                                <button onclick="openSessionDetail('ST2024-089', '10:00 AM')" 
+                                        class="w-full h-12 bg-yellow-500 text-white text-xs rounded px-1 font-medium hover:bg-yellow-600 transition-colors">
+                                    ST-089<br>Pending
+                                </button>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1"></div>
+                        </div>
+
+                        <!-- 11:00 AM -->
+                        <div class="flex border-b border-gray-100">
+                            <div class="w-16 flex-shrink-0 py-4 px-2 text-xs font-medium text-gray-600 bg-gray-50 border-r">
+                                11:00<br>AM
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100">
+                                <div class="w-full h-12 bg-gray-200 text-gray-600 text-xs rounded px-1 font-medium flex items-center justify-center">
+                                    Admin<br>Time
+                                </div>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100">
+                                <button onclick="openSessionDetail('ST2024-167', '11:00 AM')" 
+                                        class="w-full h-12 bg-red-500 text-white text-xs rounded px-1 font-medium hover:bg-red-600 transition-colors">
+                                    ST-167<br>Crisis
+                                </button>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100 bg-blue-50">
+                                <div class="w-full h-12 bg-gray-200 text-gray-600 text-xs rounded px-1 font-medium flex items-center justify-center">
+                                    Break
+                                </div>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1"></div>
+                        </div>
+
+                        <!-- 12:00 PM -->
+                        <div class="flex border-b border-gray-100">
+                            <div class="w-16 flex-shrink-0 py-4 px-2 text-xs font-medium text-gray-600 bg-gray-50 border-r">
+                                12:00<br>PM
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100">
+                                <button onclick="openSessionDetail('ST2024-192', '12:00 PM')" 
+                                        class="w-full h-12 bg-green-500 text-white text-xs rounded px-1 font-medium hover:bg-green-600 transition-colors">
+                                    ST-192<br>3rd Sess
+                                </button>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100 bg-blue-50">
+                                <button onclick="openSessionDetail('ST2024-203', '12:00 PM')" 
+                                        class="w-full h-12 bg-red-500 text-white text-xs rounded px-1 font-medium hover:bg-red-600 transition-colors">
+                                    ST-203<br>Priority
+                                </button>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1"></div>
+                        </div>
+
+                        <!-- 1:00 PM - Lunch -->
+                        <div class="flex border-b border-gray-100 bg-gray-50">
+                            <div class="w-16 flex-shrink-0 py-4 px-2 text-xs font-medium text-gray-600 bg-gray-100 border-r">
+                                1:00<br>PM
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100">
+                                <div class="w-full h-12 bg-gray-300 text-gray-600 text-xs rounded px-1 font-medium flex items-center justify-center">
+                                    Lunch<br>Break
+                                </div>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100">
+                                <div class="w-full h-12 bg-gray-300 text-gray-600 text-xs rounded px-1 font-medium flex items-center justify-center">
+                                    Lunch<br>Break
+                                </div>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100">
+                                <div class="w-full h-12 bg-gray-300 text-gray-600 text-xs rounded px-1 font-medium flex items-center justify-center">
+                                    Lunch<br>Break
+                                </div>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100">
+                                <div class="w-full h-12 bg-gray-300 text-gray-600 text-xs rounded px-1 font-medium flex items-center justify-center">
+                                    Lunch<br>Break
+                                </div>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100 bg-blue-100">
+                                <div class="w-full h-12 bg-gray-300 text-gray-600 text-xs rounded px-1 font-medium flex items-center justify-center">
+                                    Lunch<br>Break
+                                </div>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100">
+                                <div class="w-full h-12 bg-gray-300 text-gray-600 text-xs rounded px-1 font-medium flex items-center justify-center">
+                                    Lunch<br>Break
+                                </div>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1">
+                                <div class="w-full h-12 bg-gray-300 text-gray-600 text-xs rounded px-1 font-medium flex items-center justify-center">
+                                    Lunch<br>Break
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2:00 PM -->
+                        <div class="flex border-b border-gray-100">
+                            <div class="w-16 flex-shrink-0 py-4 px-2 text-xs font-medium text-gray-600 bg-gray-50 border-r">
+                                2:00<br>PM
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100">
+                                <button onclick="openSessionDetail('ST2024-145', '2:00 PM')" 
+                                        class="w-full h-12 bg-green-500 text-white text-xs rounded px-1 font-medium hover:bg-green-600 transition-colors">
+                                    ST-145<br>Group
+                                </button>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100 bg-blue-50">
+                                <button onclick="openSessionDetail('ST2024-045', '2:00 PM')" 
+                                        class="w-full h-12 bg-green-500 text-white text-xs rounded px-1 font-medium hover:bg-green-600 transition-colors">
+                                    ST-045<br>2nd Sess
+                                </button>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1"></div>
+                        </div>
+
+                        <!-- 3:00 PM -->
+                        <div class="flex border-b border-gray-100">
+                            <div class="w-16 flex-shrink-0 py-4 px-2 text-xs font-medium text-gray-600 bg-gray-50 border-r">
+                                3:00<br>PM
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100">
+                                <button onclick="openSessionDetail('ST2024-211', '3:00 PM')" 
+                                        class="w-full h-12 bg-green-500 text-white text-xs rounded px-1 font-medium hover:bg-green-600 transition-colors">
+                                    ST-211<br>Assess
+                                </button>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100 bg-blue-50">
+                                <button onclick="openSessionDetail('ST2024-178', '3:00 PM')" 
+                                        class="w-full h-12 bg-green-500 text-white text-xs rounded px-1 font-medium hover:bg-green-600 transition-colors">
+                                    ST-178<br>Initial
+                                </button>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1"></div>
+                        </div>
+
+                        <!-- 4:00 PM -->
+                        <div class="flex">
+                            <div class="w-16 flex-shrink-0 py-4 px-2 text-xs font-medium text-gray-600 bg-gray-50 border-r">
+                                4:00<br>PM
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100">
+                                <button onclick="showAvailableSlot('mon-4pm')" 
+                                        class="w-full h-12 bg-purple-200 text-purple-700 text-xs rounded px-1 font-medium hover:bg-purple-300 transition-colors">
+                                    Available
+                                </button>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100">
+                                <button onclick="showAvailableSlot('tue-4pm')" 
+                                        class="w-full h-12 bg-purple-200 text-purple-700 text-xs rounded px-1 font-medium hover:bg-purple-300 transition-colors">
+                                    Available
+                                </button>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100">
+                                <div class="w-full h-12 bg-blue-200 text-blue-700 text-xs rounded px-1 font-medium flex items-center justify-center">
+                                    Case<br>Review
+                                </div>
+                            </div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100 bg-blue-50"></div>
+                            <div class="w-20 flex-shrink-0 p-1 border-r border-gray-100"></div>
+                            <div class="w-20 flex-shrink-0 p-1"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile Legend -->
+                <div class="p-4 bg-gray-50 border-t">
+                    <div class="flex flex-wrap gap-3 text-xs">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-green-500 rounded"></div>
+                            <span class="text-gray-600">Confirmed</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-yellow-500 rounded"></div>
+                            <span class="text-gray-600">Pending</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-red-500 rounded"></div>
+                            <span class="text-gray-600">Priority</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-purple-200 rounded"></div>
+                            <span class="text-gray-600">Available</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop Schedule Grid -->
+            <div class="hidden lg:block bg-white rounded-3xl shadow-sm overflow-hidden">
+                <!-- Header Row -->
+                <div class="grid grid-cols-8 bg-gray-50 border-b">
+                    <div class="p-4 font-semibold text-gray-700">Time</div>
+                    <div class="p-4 font-semibold text-gray-700 text-center border-l">Mon<br><span class="text-sm font-normal">23</span></div>
+                    <div class="p-4 font-semibold text-gray-700 text-center border-l">Tue<br><span class="text-sm font-normal">24</span></div>
+                    <div class="p-4 font-semibold text-gray-700 text-center border-l">Wed<br><span class="text-sm font-normal">25</span></div>
+                    <div class="p-4 font-semibold text-gray-700 text-center border-l">Thu<br><span class="text-sm font-normal">26</span></div>
+                    <div class="p-4 font-semibold text-gray-700 text-center border-l bg-blue-50">Fri<br><span class="text-sm font-normal">27</span></div>
+                    <div class="p-4 font-semibold text-gray-700 text-center border-l">Sat<br><span class="text-sm font-normal">28</span></div>
+                    <div class="p-4 font-semibold text-gray-700 text-center border-l">Sun<br><span class="text-sm font-normal">29</span></div>
+                </div>
+
+                <!-- Time Slots -->
+                <div class="divide-y">
+                    <!-- 9:00 AM -->
+                    <div class="grid grid-cols-8 min-h-16">
+                        <div class="p-4 font-medium text-gray-600 bg-gray-50 border-r">9:00 AM</div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l bg-blue-50">
+                            <div class="time-slot bg-green-100 border border-green-300 rounded p-2 cursor-pointer" onclick="openAppointment('fri-9am')">
+                                <div class="text-xs font-semibold text-green-800">ST2024-156</div>
+                                <div class="text-xs text-green-600">Initial Session</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                    </div>
+
+                    <!-- 10:00 AM -->
+                    <div class="grid grid-cols-8 min-h-16">
+                        <div class="p-4 font-medium text-gray-600 bg-gray-50 border-r">10:00 AM</div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-yellow-100 border border-yellow-300 rounded p-2 cursor-pointer" onclick="openAppointment('mon-10am')">
+                                <div class="text-xs font-semibold text-yellow-800">ST2024-234</div>
+                                <div class="text-xs text-yellow-600">Follow-up</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-green-100 border border-green-300 rounded p-2 cursor-pointer" onclick="openAppointment('wed-10am')">
+                                <div class="text-xs font-semibold text-green-800">ST2024-078</div>
+                                <div class="text-xs text-green-600">Regular Session</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l bg-blue-50">
+                            <div class="time-slot bg-yellow-100 border border-yellow-300 rounded p-2 cursor-pointer" onclick="openAppointment('fri-10am')">
+                                <div class="text-xs font-semibold text-yellow-800">ST2024-089</div>
+                                <div class="text-xs text-yellow-600">Pending</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                    </div>
+
+                    <!-- 11:00 AM -->
+                    <div class="grid grid-cols-8 min-h-16">
+                        <div class="p-4 font-medium text-gray-600 bg-gray-50 border-r">11:00 AM</div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-blue-100 border border-blue-300 rounded p-2 text-center">
+                                <div class="text-xs font-semibold text-blue-800">Admin Time</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-red-100 border border-red-300 rounded p-2 cursor-pointer" onclick="openAppointment('thu-11am')">
+                                <div class="text-xs font-semibold text-red-800">ST2024-167</div>
+                                <div class="text-xs text-red-600">Crisis Session</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l bg-blue-50">
+                            <div class="time-slot bg-gray-100 border border-gray-300 rounded p-2 text-center">
+                                <div class="text-xs font-semibold text-gray-600">Break</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                    </div>
+
+                    <!-- 12:00 PM -->
+                    <div class="grid grid-cols-8 min-h-16">
+                        <div class="p-4 font-medium text-gray-600 bg-gray-50 border-r">12:00 PM</div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-green-100 border border-green-300 rounded p-2 cursor-pointer" onclick="openAppointment('mon-12pm')">
+                                <div class="text-xs font-semibold text-green-800">ST2024-192</div>
+                                <div class="text-xs text-green-600">Third Session</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l bg-blue-50">
+                            <div class="time-slot bg-red-100 border border-red-300 rounded p-2 cursor-pointer" onclick="openAppointment('fri-12pm')">
+                                <div class="text-xs font-semibold text-red-800">ST2024-203</div>
+                                <div class="text-xs text-red-600">High Priority</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                    </div>
+
+                    <!-- 1:00 PM - Lunch Break -->
+                    <div class="grid grid-cols-8 min-h-16 bg-gray-50">
+                        <div class="p-4 font-medium text-gray-600 bg-gray-100 border-r">1:00 PM</div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-gray-200 border border-gray-400 rounded p-2 text-center">
+                                <div class="text-xs font-semibold text-gray-600">Lunch Break</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-gray-200 border border-gray-400 rounded p-2 text-center">
+                                <div class="text-xs font-semibold text-gray-600">Lunch Break</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-gray-200 border border-gray-400 rounded p-2 text-center">
+                                <div class="text-xs font-semibold text-gray-600">Lunch Break</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-gray-200 border border-gray-400 rounded p-2 text-center">
+                                <div class="text-xs font-semibold text-gray-600">Lunch Break</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l bg-blue-100">
+                            <div class="time-slot bg-gray-200 border border-gray-400 rounded p-2 text-center">
+                                <div class="text-xs font-semibold text-gray-600">Lunch Break</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-gray-200 border border-gray-400 rounded p-2 text-center">
+                                <div class="text-xs font-semibold text-gray-600">Lunch Break</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-gray-200 border border-gray-400 rounded p-2 text-center">
+                                <div class="text-xs font-semibold text-gray-600">Lunch Break</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2:00 PM -->
+                    <div class="grid grid-cols-8 min-h-16">
+                        <div class="p-4 font-medium text-gray-600 bg-gray-50 border-r">2:00 PM</div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-green-100 border border-green-300 rounded p-2 cursor-pointer" onclick="openAppointment('tue-2pm')">
+                                <div class="text-xs font-semibold text-green-800">ST2024-145</div>
+                                <div class="text-xs text-green-600">Group Prep</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l bg-blue-50">
+                            <div class="time-slot bg-green-100 border border-green-300 rounded p-2 cursor-pointer" onclick="openAppointment('fri-2pm')">
+                                <div class="text-xs font-semibold text-green-800">ST2024-045</div>
+                                <div class="text-xs text-green-600">Second Session</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                    </div>
+
+                    <!-- 3:00 PM -->
+                    <div class="grid grid-cols-8 min-h-16">
+                        <div class="p-4 font-medium text-gray-600 bg-gray-50 border-r">3:00 PM</div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-green-100 border border-green-300 rounded p-2 cursor-pointer" onclick="openAppointment('wed-3pm')">
+                                <div class="text-xs font-semibold text-green-800">ST2024-211</div>
+                                <div class="text-xs text-green-600">Assessment</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l bg-blue-50">
+                            <div class="time-slot bg-green-100 border border-green-300 rounded p-2 cursor-pointer" onclick="openAppointment('fri-3pm')">
+                                <div class="text-xs font-semibold text-green-800">ST2024-178</div>
+                                <div class="text-xs text-green-600">Initial Session</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                    </div>
+
+                    <!-- 4:00 PM -->
+                    <div class="grid grid-cols-8 min-h-16">
+                        <div class="p-4 font-medium text-gray-600 bg-gray-50 border-r">4:00 PM</div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-purple-100 border border-purple-300 rounded p-2 text-center cursor-pointer" onclick="showAvailableSlot('mon-4pm')">
+                                <div class="text-xs font-semibold text-purple-800">Available</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-purple-100 border border-purple-300 rounded p-2 text-center cursor-pointer" onclick="showAvailableSlot('tue-4pm')">
+                                <div class="text-xs font-semibold text-purple-800">Available</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l">
+                            <div class="time-slot bg-blue-100 border border-blue-300 rounded p-2 text-center">
+                                <div class="text-xs font-semibold text-blue-800">Case Review</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l bg-blue-50"></div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="mt-6 bg-white rounded-2xl p-6 shadow-sm">
+                <h3 class="font-semibold text-gray-800 mb-4">Schedule Legend</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-green-100 border border-green-300 rounded"></div>
+                        <span class="text-sm text-gray-600">Confirmed Appointment</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-yellow-100 border border-yellow-300 rounded"></div>
+                        <span class="text-sm text-gray-600">Pending Confirmation</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-red-100 border border-red-300 rounded"></div>
+                        <span class="text-sm text-gray-600">High Priority</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-purple-100 border border-purple-300 rounded"></div>
+                        <span class="text-sm text-gray-600">Available Slot</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-blue-100 border border-blue-300 rounded"></div>
+                        <span class="text-sm text-gray-600">Admin/Break Time</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-4 h-4 bg-gray-200 border border-gray-400 rounded"></div>
+                        <span class="text-sm text-gray-600">Unavailable</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Availability Modal -->
+    <div id="availabilityModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Set Availability</h3>
+                <button onclick="closeAvailabilityModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Working Days</label>
+                    <div class="grid grid-cols-7 gap-2">
+                        <label class="flex items-center justify-center p-2 border rounded cursor-pointer hover:bg-gray-50">
+                            <input type="checkbox" class="sr-only" checked>
+                            <span class="text-sm">Mon</span>
+                        </label>
+                        <label class="flex items-center justify-center p-2 border rounded cursor-pointer hover:bg-gray-50">
+                            <input type="checkbox" class="sr-only" checked>
+                            <span class="text-sm">Tue</span>
+                        </label>
+                        <label class="flex items-center justify-center p-2 border rounded cursor-pointer hover:bg-gray-50">
+                            <input type="checkbox" class="sr-only" checked>
+                            <span class="text-sm">Wed</span>
+                        </label>
+                        <label class="flex items-center justify-center p-2 border rounded cursor-pointer hover:bg-gray-50">
+                            <input type="checkbox" class="sr-only" checked>
+                            <span class="text-sm">Thu</span>
+                        </label>
+                        <label class="flex items-center justify-center p-2 border rounded cursor-pointer hover:bg-gray-50 bg-blue-50 border-blue-300">
+                            <input type="checkbox" class="sr-only" checked>
+                            <span class="text-sm">Fri</span>
+                        </label>
+                        <label class="flex items-center justify-center p-2 border rounded cursor-pointer hover:bg-gray-50">
+                            <input type="checkbox" class="sr-only">
+                            <span class="text-sm">Sat</span>
+                        </label>
+                        <label class="flex items-center justify-center p-2 border rounded cursor-pointer hover:bg-gray-50">
+                            <input type="checkbox" class="sr-only">
+                            <span class="text-sm">Sun</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Working Hours</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Start Time</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option>8:00 AM</option>
+                                <option selected>9:00 AM</option>
+                                <option>10:00 AM</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">End Time</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option>3:00 PM</option>
+                                <option>4:00 PM</option>
+                                <option selected>5:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Lunch Break</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Break Start</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option>12:00 PM</option>
+                                <option selected>1:00 PM</option>
+                                <option>2:00 PM</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Break End</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option>1:00 PM</option>
+                                <option selected>2:00 PM</option>
+                                <option>3:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex space-x-3 mt-6">
+                <button onclick="closeAvailabilityModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold transition-all">
+                    Cancel
+                </button>
+                <button onclick="saveAvailability()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-all">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Schedule data structure for mobile view
+        const scheduleData = {
+            mon: [
+                { time: '09:00 AM', type: 'available', student: null, subject: null },
+                { time: '10:00 AM', type: 'pending', student: 'ST2024-234', subject: 'Follow-up' },
+                { time: '11:00 AM', type: 'available', student: null, subject: null },
+                { time: '12:00 PM', type: 'confirmed', student: 'ST2024-192', subject: 'Third Session' },
+                { time: '01:00 PM', type: 'break', student: 'Lunch Break', subject: 'Unavailable' },
+                { time: '02:00 PM', type: 'available', student: null, subject: null },
+                { time: '03:00 PM', type: 'available', student: null, subject: null },
+                { time: '04:00 PM', type: 'available', student: null, subject: null }
+            ],
+            tue: [
+                { time: '09:00 AM', type: 'available', student: null, subject: null },
+                { time: '10:00 AM', type: 'available', student: null, subject: null },
+                { time: '11:00 AM', type: 'admin', student: 'Admin Time', subject: 'Administrative Tasks' },
+                { time: '12:00 PM', type: 'available', student: null, subject: null },
+                { time: '01:00 PM', type: 'break', student: 'Lunch Break', subject: 'Unavailable' },
+                { time: '02:00 PM', type: 'confirmed', student: 'ST2024-145', subject: 'Group Prep' },
+                { time: '03:00 PM', type: 'available', student: null, subject: null },
+                { time: '04:00 PM', type: 'available', student: null, subject: null }
+            ],
+            wed: [
+                { time: '09:00 AM', type: 'available', student: null, subject: null },
+                { time: '10:00 AM', type: 'confirmed', student: 'ST2024-078', subject: 'Regular Session' },
+                { time: '11:00 AM', type: 'available', student: null, subject: null },
+                { time: '12:00 PM', type: 'available', student: null, subject: null },
+                { time: '01:00 PM', type: 'break', student: 'Lunch Break', subject: 'Unavailable' },
+                { time: '02:00 PM', type: 'available', student: null, subject: null },
+                { time: '03:00 PM', type: 'confirmed', student: 'ST2024-211', subject: 'Assessment' },
+                { time: '04:00 PM', type: 'available', student: null, subject: null }
+            ],
+            thu: [
+                { time: '09:00 AM', type: 'available', student: null, subject: null },
+                { time: '10:00 AM', type: 'available', student: null, subject: null },
+                { time: '11:00 AM', type: 'crisis', student: 'ST2024-167', subject: 'Crisis Session' },
+                { time: '12:00 PM', type: 'available', student: null, subject: null },
+                { time: '01:00 PM', type: 'break', student: 'Lunch Break', subject: 'Unavailable' },
+                { time: '02:00 PM', type: 'available', student: null, subject: null },
+                { time: '03:00 PM', type: 'available', student: null, subject: null },
+                { time: '04:00 PM', type: 'admin', student: 'Case Review', subject: 'Administrative Work' }
+            ],
+            fri: [
+                { time: '09:00 AM', type: 'confirmed', student: 'ST2024-156', subject: 'Initial Session' },
+                { time: '10:00 AM', type: 'pending', student: 'ST2024-089', subject: 'Pending Confirmation' },
+                { time: '11:00 AM', type: 'break', student: 'Break Time', subject: 'Personal Break' },
+                { time: '12:00 PM', type: 'crisis', student: 'ST2024-203', subject: 'High Priority' },
+                { time: '01:00 PM', type: 'break', student: 'Lunch Break', subject: 'Unavailable' },
+                { time: '02:00 PM', type: 'confirmed', student: 'ST2024-045', subject: 'Second Session' },
+                { time: '03:00 PM', type: 'confirmed', student: 'ST2024-178', subject: 'Initial Session' },
+                { time: '04:00 PM', type: 'available', student: null, subject: null }
+            ],
+            sat: [
+                { time: '09:00 AM', type: 'available', student: null, subject: null },
+                { time: '10:00 AM', type: 'available', student: null, subject: null },
+                { time: '11:00 AM', type: 'available', student: null, subject: null },
+                { time: '12:00 PM', type: 'available', student: null, subject: null },
+                { time: '01:00 PM', type: 'break', student: 'Lunch Break', subject: 'Unavailable' },
+                { time: '02:00 PM', type: 'available', student: null, subject: null },
+                { time: '03:00 PM', type: 'available', student: null, subject: null },
+                { time: '04:00 PM', type: 'available', student: null, subject: null }
+            ],
+            sun: [
+                { time: '09:00 AM', type: 'available', student: null, subject: null },
+                { time: '10:00 AM', type: 'available', student: null, subject: null },
+                { time: '11:00 AM', type: 'available', student: null, subject: null },
+                { time: '12:00 PM', type: 'available', student: null, subject: null },
+                { time: '01:00 PM', type: 'break', student: 'Lunch Break', subject: 'Unavailable' },
+                { time: '02:00 PM', type: 'available', student: null, subject: null },
+                { time: '03:00 PM', type: 'available', student: null, subject: null },
+                { time: '04:00 PM', type: 'available', student: null, subject: null }
+            ]
+        };
+
+        function switchMobileDay() {
+            const selectedDay = document.getElementById('mobileDay').value;
+            populateMobileSchedule(selectedDay);
+        }
+
+        function populateMobileSchedule(day) {
+            const mobileSchedule = document.getElementById('mobileSchedule');
+            const dayData = scheduleData[day];
+            
+            mobileSchedule.innerHTML = '';
+            
+            dayData.forEach(slot => {
+                const slotDiv = document.createElement('div');
+                slotDiv.className = 'bg-white rounded-2xl p-4 shadow-sm border-l-4';
+                
+                let bgColor = 'bg-gray-50';
+                let borderColor = 'border-gray-300';
+                let textColor = 'text-gray-700';
+                let icon = 'fas fa-plus-circle text-gray-500';
+                
+                if (slot.type === 'confirmed') {
+                    bgColor = 'bg-green-50';
+                    borderColor = 'border-green-500';
+                    textColor = 'text-green-800';
+                    icon = 'fas fa-check-circle text-green-500';
+                } else if (slot.type === 'pending') {
+                    bgColor = 'bg-yellow-50';
+                    borderColor = 'border-yellow-500';
+                    textColor = 'text-yellow-800';
+                    icon = 'fas fa-clock text-yellow-500';
+                } else if (slot.type === 'crisis') {
+                    bgColor = 'bg-red-50';
+                    borderColor = 'border-red-500';
+                    textColor = 'text-red-800';
+                    icon = 'fas fa-exclamation-triangle text-red-500';
+                } else if (slot.type === 'available') {
+                    bgColor = 'bg-purple-50';
+                    borderColor = 'border-purple-500';
+                    textColor = 'text-purple-800';
+                    icon = 'fas fa-plus-circle text-purple-500';
+                } else if (slot.type === 'break') {
+                    bgColor = 'bg-gray-100';
+                    borderColor = 'border-gray-400';
+                    textColor = 'text-gray-600';
+                    icon = 'fas fa-coffee text-gray-500';
+                } else if (slot.type === 'admin') {
+                    bgColor = 'bg-blue-50';
+                    borderColor = 'border-blue-500';
+                    textColor = 'text-blue-800';
+                    icon = 'fas fa-briefcase text-blue-500';
+                }
+                
+                slotDiv.className += ` ${bgColor} ${borderColor}`;
+                
+                let content = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="text-lg font-semibold ${textColor}">${slot.time}</div>
+                `;
+                
+                if (slot.student && slot.type !== 'break' && slot.type !== 'admin') {
+                    content += `
+                            <div class="text-sm font-medium text-gray-900 mt-1">${slot.student}</div>
+                            <div class="text-sm text-gray-600">${slot.subject}</div>
+                    `;
+                    if (slot.type !== 'available') {
+                        content += `
+                            <button onclick="openAppointment('${day}-${slot.time.replace(/[\s:]/g, '').toLowerCase()}')" 
+                                    class="mt-3 bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors touch-target">
+                                View Details
+                            </button>
+                        `;
+                    }
+                } else if (slot.type === 'available') {
+                    content += `
+                            <div class="text-sm text-gray-600 mt-1">Available Slot</div>
+                            <button onclick="showAvailableSlot('${day}-${slot.time.replace(/[\s:]/g, '').toLowerCase()}')" 
+                                    class="mt-3 bg-purple-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors touch-target">
+                                Book Appointment
+                            </button>
+                    `;
+                } else {
+                    content += `
+                            <div class="text-sm text-gray-600 mt-1">${slot.subject}</div>
+                    `;
+                }
+                
+                content += `
+                        </div>
+                        <div class="ml-4 flex-shrink-0">
+                            <i class="${icon} text-xl"></i>
+                        </div>
+                    </div>
+                `;
+                
+                slotDiv.innerHTML = content;
+                mobileSchedule.appendChild(slotDiv);
+            });
+        }
+
+        // Initialize mobile schedule on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth < 1024) { // lg breakpoint
+                populateMobileSchedule('fri'); // Default to Friday (today)
+            }
+        });
+
+        function openSideDrawer() {
+            document.getElementById('sideDrawer').classList.add('open');
+            document.getElementById('overlay').classList.add('show');
+        }
+
+        function closeSideDrawer() {
+            document.getElementById('sideDrawer').classList.remove('open');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        document.getElementById('overlay').addEventListener('click', closeSideDrawer);
+
+        function showAvailabilityModal() {
+            document.getElementById('availabilityModal').classList.remove('hidden');
+        }
+
+        function closeAvailabilityModal() {
+            document.getElementById('availabilityModal').classList.add('hidden');
+        }
+
+        function saveAvailability() {
+            alert('Availability settings saved successfully!');
+            closeAvailabilityModal();
+        }
+
+        function openAppointment(appointmentId) {
+            alert(`Opening appointment details for ${appointmentId}\n\nThis would show:\n• Student information\n• Session type and notes\n• Previous session history\n• Reschedule/cancel options`);
+        }
+
+        function showAvailableSlot(slotId) {
+            if (confirm(`Would you like to mark this time slot as unavailable?\n\nSlot: ${slotId}`)) {
+                alert('Time slot has been marked as unavailable.');
+            }
+        }
+
+        function previousWeek() {
+            alert('Navigate to previous week (Dec 16 - Dec 22, 2024)');
+        }
+
+        function nextWeek() {
+            alert('Navigate to next week (Dec 30, 2024 - Jan 5, 2025)');
+        }
+    </script>
+</body>
+</html> 

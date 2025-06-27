@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referrals Queue - DMHLH Counsellor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'peach-50': '#FFEADF',
+                        'sky-50': '#EFF8FF',
+                        'soft-pink': '#F8E8F5',
+                        'soft-green': '#E8F5E8',
+                        'soft-yellow': '#FFF8DC',
+                        'soft-purple': '#F0E8FF'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .referral-card {
+            transition: all 0.3s ease;
+        }
+        .referral-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .side-drawer {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .side-drawer.open {
+            transform: translateX(0);
+        }
+        .overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Mobile Menu Overlay -->
+    <div id="overlay" class="overlay fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+
+    <!-- Side Navigation Drawer -->
+    <nav id="sideDrawer" class="side-drawer fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-full p-2">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">DMHLH</span>
+                </div>
+                <button onclick="closeSideDrawer()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- User Profile -->
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 mb-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold">SW</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800">Dr. Sarah Wilson</h3>
+                        <p class="text-sm text-gray-600">Clinical Psychologist</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <div class="space-y-2">
+                <a href="counsellor-dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="counsellor-schedule.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-calendar-alt w-5"></i>
+                    <span>My Schedule</span>
+                </a>
+                <a href="counsellor-students.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-users w-5"></i>
+                    <span>My Students</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg">
+                    <i class="fas fa-exclamation-triangle w-5"></i>
+                    <span>Referrals Queue</span>
+                </a>
+                <a href="counsellor-forum.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-comments w-5"></i>
+                    <span>Forum Moderation</span>
+                </a>
+                <a href="counsellor-reports.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-chart-bar w-5"></i>
+                    <span>Reports</span>
+                </a>
+            </div>
+
+            <!-- Logout -->
+            <div class="absolute bottom-6 left-6 right-6">
+                <button onclick="window.location.href='login.html'" class="flex items-center space-x-3 w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="min-h-screen">
+        <!-- Top Navigation -->
+        <div class="bg-white shadow-sm border-b">
+            <div class="px-4 py-4 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button onclick="openSideDrawer()" class="text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-exclamation-triangle text-red-500"></i>
+                        <h1 class="text-xl font-bold text-gray-800">Referrals Queue</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
+                        3 Urgent
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-4 max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-red-50 to-orange-50 rounded-3xl p-6 mb-6 border border-red-200">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Referrals Management</h2>
+                        <p class="text-gray-600">Review and manage student referrals requiring immediate attention</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="flex space-x-2 overflow-x-auto pb-4 mb-6">
+                <button onclick="filterReferrals('all')" class="filter-tab active bg-red-600 text-white px-6 py-3 rounded-full text-sm font-medium whitespace-nowrap">
+                    All Referrals
+                </button>
+                <button onclick="filterReferrals('urgent')" class="filter-tab bg-white text-gray-600 px-6 py-3 rounded-full text-sm font-medium whitespace-nowrap border border-gray-200 hover:border-red-300">
+                    Urgent (3)
+                </button>
+                <button onclick="filterReferrals('pending')" class="filter-tab bg-white text-gray-600 px-6 py-3 rounded-full text-sm font-medium whitespace-nowrap border border-gray-200 hover:border-yellow-300">
+                    Pending Review (5)
+                </button>
+                <button onclick="filterReferrals('completed')" class="filter-tab bg-white text-gray-600 px-6 py-3 rounded-full text-sm font-medium whitespace-nowrap border border-gray-200 hover:border-green-300">
+                    Completed (12)
+                </button>
+            </div>
+
+            <!-- Referrals List -->
+            <div class="space-y-4">
+                <!-- Urgent Referral -->
+                <div class="referral-card bg-white rounded-2xl p-6 shadow-sm border-l-4 border-red-500" data-category="urgent">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <span class="bg-red-500 text-white text-xs px-3 py-1 rounded-full font-semibold">URGENT</span>
+                                <span class="text-sm text-gray-600">Submitted 2 hours ago</span>
+                                <span class="text-sm text-gray-600">•</span>
+                                <span class="text-sm text-gray-600">Student ID: ST2024-134</span>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Immediate Crisis Intervention Required</h3>
+                            <p class="text-gray-600 mb-4">Student expressing thoughts of self-harm during session. Requires immediate psychiatric evaluation and safety planning. Previous history of depression and recent stressors including academic failure and family issues.</p>
+                            
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                                <div>
+                                    <label class="text-xs text-gray-500">Risk Level</label>
+                                    <div class="text-sm font-medium text-red-600">High</div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500">Referred By</label>
+                                    <div class="text-sm font-medium text-gray-800">Dr. James Lee</div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500">Session Type</label>
+                                    <div class="text-sm font-medium text-gray-800">Crisis Counselling</div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500">Contact</label>
+                                    <div class="text-sm font-medium text-gray-800">Emergency Contact Made</div>
+                                </div>
+                            </div>
+
+                            <div class="bg-red-50 rounded-lg p-3 mb-4">
+                                <h4 class="font-semibold text-red-800 mb-2">Immediate Actions Required:</h4>
+                                <ul class="text-sm text-red-700 space-y-1">
+                                    <li>• Contact emergency psychiatric services</li>
+                                    <li>• Implement safety plan</li>
+                                    <li>• Notify student support team</li>
+                                    <li>• Schedule follow-up within 24 hours</li>
+                                </ul>
+                            </div>
+
+                            <div class="flex items-center space-x-3">
+                                <button onclick="acceptReferral('urgent-1')" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-all">
+                                    <i class="fas fa-check mr-2"></i>Accept & Assign
+                                </button>
+                                <button onclick="escalateReferral('urgent-1')" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-medium transition-all">
+                                    <i class="fas fa-arrow-up mr-2"></i>Escalate to Senior
+                                </button>
+                                <button onclick="viewDetails('urgent-1')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium transition-all">
+                                    <i class="fas fa-eye mr-2"></i>View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- High Priority Referral -->
+                <div class="referral-card bg-white rounded-2xl p-6 shadow-sm border-l-4 border-orange-500" data-category="urgent">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <span class="bg-orange-500 text-white text-xs px-3 py-1 rounded-full font-semibold">HIGH PRIORITY</span>
+                                <span class="text-sm text-gray-600">Submitted 4 hours ago</span>
+                                <span class="text-sm text-gray-600">•</span>
+                                <span class="text-sm text-gray-600">Student ID: ST2024-089</span>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Eating Disorder Assessment Needed</h3>
+                            <p class="text-gray-600 mb-4">Student showing signs of restrictive eating patterns, significant weight loss, and distorted body image. Requires specialized eating disorder assessment and possible medical evaluation.</p>
+                            
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                                <div>
+                                    <label class="text-xs text-gray-500">Risk Level</label>
+                                    <div class="text-sm font-medium text-orange-600">Medium-High</div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500">Referred By</label>
+                                    <div class="text-sm font-medium text-gray-800">Campus Nurse</div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500">Session Type</label>
+                                    <div class="text-sm font-medium text-gray-800">Assessment</div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500">Urgency</label>
+                                    <div class="text-sm font-medium text-gray-800">Within 48 hours</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-3">
+                                <button onclick="acceptReferral('urgent-2')" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-medium transition-all">
+                                    <i class="fas fa-check mr-2"></i>Accept
+                                </button>
+                                <button onclick="transferReferral('urgent-2')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all">
+                                    <i class="fas fa-exchange-alt mr-2"></i>Transfer to ED Specialist
+                                </button>
+                                <button onclick="viewDetails('urgent-2')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium transition-all">
+                                    <i class="fas fa-eye mr-2"></i>View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Referral -->
+                <div class="referral-card bg-white rounded-2xl p-6 shadow-sm border-l-4 border-yellow-500" data-category="pending">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <span class="bg-yellow-500 text-white text-xs px-3 py-1 rounded-full font-semibold">PENDING REVIEW</span>
+                                <span class="text-sm text-gray-600">Submitted 1 day ago</span>
+                                <span class="text-sm text-gray-600">•</span>
+                                <span class="text-sm text-gray-600">Student ID: ST2024-156</span>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Anxiety Management Support</h3>
+                            <p class="text-gray-600 mb-4">Student experiencing severe test anxiety affecting academic performance. Requesting ongoing counselling support and possible academic accommodations.</p>
+                            
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                                <div>
+                                    <label class="text-xs text-gray-500">Risk Level</label>
+                                    <div class="text-sm font-medium text-yellow-600">Medium</div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500">Referred By</label>
+                                    <div class="text-sm font-medium text-gray-800">Academic Advisor</div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500">Session Type</label>
+                                    <div class="text-sm font-medium text-gray-800">Ongoing Support</div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500">Timeline</label>
+                                    <div class="text-sm font-medium text-gray-800">Non-urgent</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-3">
+                                <button onclick="acceptReferral('pending-1')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all">
+                                    <i class="fas fa-check mr-2"></i>Accept
+                                </button>
+                                <button onclick="requestMoreInfo('pending-1')" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg font-medium transition-all">
+                                    <i class="fas fa-question mr-2"></i>Request More Info
+                                </button>
+                                <button onclick="viewDetails('pending-1')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium transition-all">
+                                    <i class="fas fa-eye mr-2"></i>View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completed Referral -->
+                <div class="referral-card bg-white rounded-2xl p-6 shadow-sm border-l-4 border-green-500" data-category="completed">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <span class="bg-green-500 text-white text-xs px-3 py-1 rounded-full font-semibold">COMPLETED</span>
+                                <span class="text-sm text-gray-600">Completed 2 days ago</span>
+                                <span class="text-sm text-gray-600">•</span>
+                                <span class="text-sm text-gray-600">Student ID: ST2024-203</span>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Trauma Counselling</h3>
+                            <p class="text-gray-600 mb-4">Student successfully connected with trauma specialist. Initial assessment completed and ongoing treatment plan established.</p>
+                            
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                                <div>
+                                    <label class="text-xs text-gray-500">Outcome</label>
+                                    <div class="text-sm font-medium text-green-600">Successfully Referred</div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500">Assigned To</label>
+                                    <div class="text-sm font-medium text-gray-800">Dr. Maria Santos</div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500">Completed By</label>
+                                    <div class="text-sm font-medium text-gray-800">Dr. Sarah Wilson</div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500">Follow-up</label>
+                                    <div class="text-sm font-medium text-gray-800">Scheduled</div>
+                                </div>
+                            </div>
+
+                            <div class="bg-green-50 rounded-lg p-3 mb-4">
+                                <p class="text-sm text-green-700"><strong>Resolution:</strong> Student connected with specialized trauma counsellor. Weekly sessions established. Crisis safety plan in place.</p>
+                            </div>
+
+                            <div class="flex items-center space-x-3">
+                                <button onclick="viewDetails('completed-1')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium transition-all">
+                                    <i class="fas fa-eye mr-2"></i>View Details
+                                </button>
+                                <button onclick="archiveReferral('completed-1')" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg font-medium transition-all">
+                                    <i class="fas fa-archive mr-2"></i>Archive
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Contacts -->
+            <div class="mt-8 bg-red-50 border border-red-200 rounded-2xl p-6">
+                <h3 class="text-lg font-bold text-red-800 mb-4">Emergency Contacts</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">Crisis Intervention Team</h4>
+                        <p class="text-sm text-gray-600 mb-2">24/7 Emergency Support</p>
+                        <p class="text-lg font-bold text-red-600">1800-CRISIS-1</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">Campus Security</h4>
+                        <p class="text-sm text-gray-600 mb-2">Immediate campus assistance</p>
+                        <p class="text-lg font-bold text-red-600">Extension: 9999</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">Senior Counsellor</h4>
+                        <p class="text-sm text-gray-600 mb-2">Dr. Michael Chen - Escalations</p>
+                        <p class="text-lg font-bold text-red-600">(03) 9123-4567</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openSideDrawer() {
+            document.getElementById('sideDrawer').classList.add('open');
+            document.getElementById('overlay').classList.add('show');
+        }
+
+        function closeSideDrawer() {
+            document.getElementById('sideDrawer').classList.remove('open');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        document.getElementById('overlay').addEventListener('click', closeSideDrawer);
+
+        function filterReferrals(category) {
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active', 'bg-red-600', 'text-white');
+                tab.classList.add('bg-white', 'text-gray-600');
+            });
+            event.target.classList.add('active', 'bg-red-600', 'text-white');
+            event.target.classList.remove('bg-white', 'text-gray-600');
+
+            // Filter referrals
+            const referrals = document.querySelectorAll('.referral-card');
+            referrals.forEach(referral => {
+                if (category === 'all' || referral.dataset.category === category) {
+                    referral.style.display = 'block';
+                } else {
+                    referral.style.display = 'none';
+                }
+            });
+        }
+
+        function acceptReferral(referralId) {
+            if (confirm('Accept this referral and add to your caseload?')) {
+                alert(`Referral ${referralId} accepted successfully!\n\nNext steps:\n• Schedule initial appointment\n• Send confirmation to referring party\n• Update student record`);
+            }
+        }
+
+        function escalateReferral(referralId) {
+            if (confirm('Escalate this referral to senior counsellor?')) {
+                alert(`Referral ${referralId} escalated to Dr. Michael Chen.\n\nThey will be notified immediately.`);
+            }
+        }
+
+        function transferReferral(referralId) {
+            if (confirm('Transfer this referral to specialized service?')) {
+                alert(`Referral ${referralId} transferred to Eating Disorder Specialist.\n\nStudent will be contacted within 24 hours.`);
+            }
+        }
+
+        function requestMoreInfo(referralId) {
+            alert(`Request for additional information sent to referring party.\n\nReferral ${referralId} status updated to "Pending Information".`);
+        }
+
+        function viewDetails(referralId) {
+            alert(`Opening detailed view for referral ${referralId}\n\nThis would show:\n• Complete student history\n• Assessment scores\n• Previous sessions\n• Risk factors\n• Contact information`);
+        }
+
+        function archiveReferral(referralId) {
+            if (confirm('Archive this completed referral?')) {
+                alert(`Referral ${referralId} archived successfully.`);
+            }
+        }
+    </script>
+</body>
+</html> 

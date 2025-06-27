@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum Moderation - DMHLH Counsellor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'peach-50': '#FFEADF',
+                        'sky-50': '#EFF8FF',
+                        'soft-pink': '#F8E8F5',
+                        'soft-green': '#E8F5E8',
+                        'soft-yellow': '#FFF8DC',
+                        'soft-purple': '#F0E8FF'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .side-drawer {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .side-drawer.open {
+            transform: translateX(0);
+        }
+        .overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .post-card {
+            transition: all 0.3s ease;
+        }
+        .post-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .post-card .flex.items-start.justify-between {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .post-card .flex.space-x-2 {
+                align-self: flex-end;
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            button {
+                min-height: 44px;
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+
+            input, select, textarea {
+                font-size: 16px;
+                padding: 16px 12px;
+                min-height: 44px;
+            }
+
+            .grid.grid-cols-1.md\\:grid-cols-3 {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .flex.flex-col.md\\:flex-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Touch interactions */
+        @media (max-width: 768px) {
+            .post-card:active {
+                transform: scale(0.98);
+            }
+
+            button:active {
+                transform: scale(0.95);
+            }
+        }
+
+        /* Focus states */
+        button:focus, input:focus, select:focus, textarea:focus {
+            outline: 2px solid #3B82F6;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Mobile Menu Overlay -->
+    <div id="overlay" class="overlay fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+
+    <!-- Side Navigation Drawer -->
+    <nav id="sideDrawer" class="side-drawer fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-full p-2">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">DMHLH</span>
+                </div>
+                <button onclick="closeSideDrawer()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- User Profile -->
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 mb-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold">SW</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800">Dr. Sarah Wilson</h3>
+                        <p class="text-sm text-gray-600">Clinical Psychologist</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <div class="space-y-2">
+                <a href="counsellor-dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="counsellor-schedule.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-calendar-alt w-5"></i>
+                    <span>My Schedule</span>
+                </a>
+                <a href="counsellor-students.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-users w-5"></i>
+                    <span>My Students</span>
+                </a>
+                <a href="counsellor-referrals.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-exclamation-triangle w-5"></i>
+                    <span>Referrals Queue</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg">
+                    <i class="fas fa-comments w-5"></i>
+                    <span>Forum Moderation</span>
+                </a>
+                <a href="counsellor-reports.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-chart-bar w-5"></i>
+                    <span>Reports</span>
+                </a>
+            </div>
+
+            <!-- Logout -->
+            <div class="absolute bottom-6 left-6 right-6">
+                <button onclick="window.location.href='login.html'" class="flex items-center space-x-3 w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="min-h-screen">
+        <!-- Top Navigation -->
+        <div class="bg-white shadow-sm border-b">
+            <div class="px-4 py-4 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button onclick="openSideDrawer()" class="text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-comments text-blue-500"></i>
+                        <h1 class="text-xl font-bold text-gray-800">Forum Moderation</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
+                        <i class="fas fa-flag mr-1"></i>4 Flagged
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-4 max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-6 mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Community Forum Oversight</h2>
+                <p class="text-gray-600">Review flagged content and maintain a safe support environment</p>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-flag text-red-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-800">4</div>
+                            <div class="text-sm text-gray-600">Flagged Posts</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-check text-green-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-800">12</div>
+                            <div class="text-sm text-gray-600">Approved Today</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-users text-blue-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-800">156</div>
+                            <div class="text-sm text-gray-600">Active Members</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm mb-6">
+                <div class="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-4">
+                    <select class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option>All Posts</option>
+                        <option>Flagged Posts</option>
+                        <option>Pending Review</option>
+                        <option>Approved Posts</option>
+                        <option>Hidden Posts</option>
+                    </select>
+                    <select class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option>All Categories</option>
+                        <option>General Support</option>
+                        <option>Academic Stress</option>
+                        <option>Relationships</option>
+                        <option>Mental Health</option>
+                        <option>Crisis Support</option>
+                    </select>
+                    <select class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option>Last 24 Hours</option>
+                        <option>Last Week</option>
+                        <option>Last Month</option>
+                        <option>All Time</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Flagged Posts -->
+            <div class="space-y-4">
+                <!-- Crisis Post -->
+                <div class="post-card bg-red-50 border border-red-200 rounded-2xl p-6">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">CRISIS</span>
+                                <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">AnxiousStudent23</span>
+                                <span class="text-xs text-gray-500">2 hours ago</span>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Feeling like giving up on everything</h4>
+                            <p class="text-sm text-gray-600 mb-3">I can't handle this anymore. The stress from exams and everything else is too much. I keep thinking about just ending it all...</p>
+                            <div class="bg-red-100 border border-red-300 rounded-lg p-3 mb-3">
+                                <div class="text-xs font-medium text-red-800 mb-1">⚠️ Crisis Alert: Suicide ideation detected</div>
+                                <div class="text-xs text-red-600">Immediate intervention required</div>
+                            </div>
+                        </div>
+                        <div class="ml-4 flex flex-col space-y-2">
+                            <button onclick="escalateCrisis()" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-all">
+                                🚨 Crisis Protocol
+                            </button>
+                            <button onclick="contactUser()" class="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition-all">
+                                📞 Contact Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Moderate Risk Post -->
+                <div class="post-card bg-yellow-50 border border-yellow-200 rounded-2xl p-6">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">FLAGGED</span>
+                                <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">StressedSophie</span>
+                                <span class="text-xs text-gray-500">4 hours ago</span>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-2">My roommate is driving me crazy!</h4>
+                            <p class="text-sm text-gray-600 mb-3">She's so inconsiderate! Sometimes I fantasize about teaching her a lesson...</p>
+                            <div class="bg-yellow-100 border border-yellow-300 rounded-lg p-3 mb-3">
+                                <div class="text-xs font-medium text-yellow-800 mb-1">Flagged for: Aggressive language</div>
+                            </div>
+                        </div>
+                        <div class="ml-4 flex flex-col space-y-2">
+                            <button onclick="approveWithWarning()" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-all">
+                                ✅ Approve + Warn
+                            </button>
+                            <button onclick="hidePost()" class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition-all">
+                                👁️ Hide Post
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spam Post -->
+                <div class="post-card bg-orange-50 border border-orange-200 rounded-2xl p-6">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <span class="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">SPAM</span>
+                                <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">WellnessGuru99</span>
+                                <span class="text-xs text-gray-500">8 hours ago</span>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-2">AMAZING supplement changed my life!</h4>
+                            <p class="text-sm text-gray-600 mb-3">Hey everyone! I found this INCREDIBLE supplement that transformed my mental health. DM me! #NotSponsored</p>
+                            <div class="bg-orange-100 border border-orange-300 rounded-lg p-3 mb-3">
+                                <div class="text-xs font-medium text-orange-800 mb-1">Flagged for: Spam, Medical misinformation</div>
+                            </div>
+                        </div>
+                        <div class="ml-4 flex flex-col space-y-2">
+                            <button onclick="removePost()" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-all">
+                                🗑️ Remove
+                            </button>
+                            <button onclick="banUser()" class="bg-red-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-900 transition-all">
+                                🚫 Ban User
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openSideDrawer() {
+            document.getElementById('sideDrawer').classList.add('open');
+            document.getElementById('overlay').classList.add('show');
+        }
+
+        function closeSideDrawer() {
+            document.getElementById('sideDrawer').classList.remove('open');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        document.getElementById('overlay').addEventListener('click', closeSideDrawer);
+
+        function escalateCrisis() {
+            alert('🚨 CRISIS PROTOCOL ACTIVATED\n\n✅ Emergency contact notified\n✅ Campus security alerted\n✅ Counselor scheduled for immediate intervention\n✅ Post removed from public view');
+        }
+
+        function contactUser() {
+            alert('📞 Contacting user through secure channel...\n\nAvailable options:\n• Direct message\n• Phone call\n• Emergency contact\n• Campus security');
+        }
+
+        function approveWithWarning() {
+            alert('✅ Post approved with community guidelines reminder sent to user.');
+        }
+
+        function hidePost() {
+            alert('👁️ Post hidden from public view and preserved for records.');
+        }
+
+        function removePost() {
+            if (confirm('Remove this spam post permanently?')) {
+                alert('🗑️ Post removed and user flagged for spam activity.');
+            }
+        }
+
+        function banUser() {
+            if (confirm('Ban this user for spam violations?')) {
+                alert('🚫 User banned for repeated community guideline violations.');
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Students - DMHLH Counsellor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'peach-50': '#FFEADF',
+                        'sky-50': '#EFF8FF',
+                        'soft-pink': '#F8E8F5',
+                        'soft-green': '#E8F5E8',
+                        'soft-yellow': '#FFF8DC',
+                        'soft-purple': '#F0E8FF'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .student-card {
+            transition: all 0.3s ease;
+        }
+        .student-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .side-drawer {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .side-drawer.open {
+            transform: translateX(0);
+        }
+        .overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            /* Stack student card content vertically on mobile */
+            .student-card .flex {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .student-card .flex .flex:first-child {
+                flex-direction: row;
+                align-items: center;
+                width: 100%;
+            }
+
+            .student-card .flex .flex:last-child {
+                flex-direction: row;
+                align-items: center;
+                gap: 0.5rem;
+                width: 100%;
+            }
+
+            /* Ensure buttons are touch-friendly */
+            button {
+                min-height: 44px;
+                padding: 12px 16px;
+                font-size: 14px;
+                flex: 1;
+            }
+
+            /* Improve form inputs for mobile */
+            input, select {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 16px 12px;
+                min-height: 44px;
+            }
+
+            /* Stack search filters vertically on small screens */
+            .flex.flex-col.md\\:flex-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            /* Grid responsive behavior */
+            .grid.grid-cols-1.md\\:grid-cols-4 {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            /* Improve tag spacing on mobile */
+            .flex.items-center.space-x-2 {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            /* Better text sizing for mobile */
+            .text-lg {
+                font-size: 1rem;
+            }
+
+            .text-3xl {
+                font-size: 1.75rem;
+            }
+        }
+
+        /* Touch interactions */
+        @media (max-width: 768px) {
+            .student-card:active {
+                transform: scale(0.98);
+            }
+
+            button:active {
+                transform: scale(0.95);
+            }
+        }
+
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus states for keyboard navigation */
+        button:focus, input:focus, select:focus {
+            outline: 2px solid #3B82F6;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Mobile Menu Overlay -->
+    <div id="overlay" class="overlay fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+
+    <!-- Side Navigation Drawer -->
+    <nav id="sideDrawer" class="side-drawer fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-full p-2">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">DMHLH</span>
+                </div>
+                <button onclick="closeSideDrawer()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- User Profile -->
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 mb-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold">SW</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800">Dr. Sarah Wilson</h3>
+                        <p class="text-sm text-gray-600">Clinical Psychologist</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <div class="space-y-2">
+                <a href="counsellor-dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="counsellor-schedule.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-calendar-alt w-5"></i>
+                    <span>My Schedule</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg">
+                    <i class="fas fa-users w-5"></i>
+                    <span>My Students</span>
+                </a>
+                <a href="counsellor-referrals.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-exclamation-triangle w-5"></i>
+                    <span>Referrals Queue</span>
+                </a>
+                <a href="counsellor-forum.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-comments w-5"></i>
+                    <span>Forum Moderation</span>
+                </a>
+                <a href="counsellor-reports.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-chart-bar w-5"></i>
+                    <span>Reports</span>
+                </a>
+            </div>
+
+            <!-- Logout -->
+            <div class="absolute bottom-6 left-6 right-6">
+                <button onclick="window.location.href='login.html'" class="flex items-center space-x-3 w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="min-h-screen">
+        <!-- Top Navigation -->
+        <div class="bg-white shadow-sm border-b">
+            <div class="px-4 py-4 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button onclick="openSideDrawer()" class="text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-users text-blue-500"></i>
+                        <h1 class="text-xl font-bold text-gray-800">My Students</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                        24 Active
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-4 max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-6 mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Student Caseload</h2>
+                <p class="text-gray-600">Manage your active students and track their progress</p>
+            </div>
+
+            <!-- Summary Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-users text-blue-600 text-2xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-blue-600 mb-2">24</div>
+                    <div class="text-sm text-gray-600">Active Students</div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 shadow-sm text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-user-plus text-green-600 text-2xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-green-600 mb-2">3</div>
+                    <div class="text-sm text-gray-600">New This Week</div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 shadow-sm text-center">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-clock text-yellow-600 text-2xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-yellow-600 mb-2">7</div>
+                    <div class="text-sm text-gray-600">Follow-up Required</div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 shadow-sm text-center">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-red-600 mb-2">2</div>
+                    <div class="text-sm text-gray-600">Crisis Support</div>
+                </div>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm mb-6">
+                <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="flex-1">
+                        <input type="text" placeholder="Search students by ID, name, or presenting issue..." 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <select class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option>All Students</option>
+                        <option>New This Week</option>
+                        <option>Follow-up Required</option>
+                        <option>Crisis Support</option>
+                        <option>Completed Treatment</option>
+                    </select>
+                    <select class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option>All Risk Levels</option>
+                        <option>Low Risk</option>
+                        <option>Medium Risk</option>
+                        <option>High Risk</option>
+                        <option>Crisis</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Students Grid -->
+            <div class="space-y-4">
+                <!-- Active Student -->
+                <div class="student-card bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="text-blue-700 font-semibold text-lg">ST</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-lg font-semibold text-gray-800">Student ID: ST2024-156</h4>
+                                <p class="text-sm text-gray-600 mb-2">Active since Dec 15, 2024 • 2 sessions completed • Next: Tomorrow 10:00 AM</p>
+                                <div class="flex items-center space-x-2">
+                                    <span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full">Anxiety Disorders</span>
+                                    <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full">Academic Stress</span>
+                                    <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">Risk: Medium</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col space-y-2">
+                            <button onclick="viewStudentProfile('ST2024-156')" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-all">
+                                View Profile
+                            </button>
+                            <button onclick="scheduleSession('ST2024-156')" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-all">
+                                Schedule Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Student -->
+                <div class="student-card bg-green-50 border border-green-200 rounded-2xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                                <span class="text-green-700 font-semibold text-lg">ST</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-lg font-semibold text-gray-800">Student ID: ST2024-289</h4>
+                                <p class="text-sm text-gray-600 mb-2">New referral • Initial assessment scheduled • Dec 30 2:00 PM</p>
+                                <div class="flex items-center space-x-2">
+                                    <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">New Patient</span>
+                                    <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">Depression</span>
+                                    <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">Risk: Unknown</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col space-y-2">
+                            <button onclick="prepareSession('ST2024-289')" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-all">
+                                Prepare Session
+                            </button>
+                            <button onclick="viewReferral('ST2024-289')" class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition-all">
+                                View Referral
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Follow-up Required -->
+                <div class="student-card bg-yellow-50 border border-yellow-200 rounded-2xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <span class="text-yellow-700 font-semibold text-lg">ST</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-lg font-semibold text-gray-800">Student ID: ST2024-203</h4>
+                                <p class="text-sm text-gray-600 mb-2">Last session: Dec 20 • Follow-up overdue by 3 days • 5 sessions completed</p>
+                                <div class="flex items-center space-x-2">
+                                    <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full">PTSD</span>
+                                    <span class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded-full">Follow-up Required</span>
+                                    <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full">Risk: High</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col space-y-2">
+                            <button onclick="scheduleUrgent('ST2024-203')" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-all">
+                                Schedule Urgent
+                            </button>
+                            <button onclick="contactStudent('ST2024-203')" class="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition-all">
+                                Contact Student
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Crisis Support -->
+                <div class="student-card bg-red-50 border border-red-200 rounded-2xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                                <span class="text-red-700 font-semibold text-lg">ST</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-lg font-semibold text-gray-800">Student ID: ST2024-134</h4>
+                                <p class="text-sm text-gray-600 mb-2">Crisis intervention • Daily check-ins required • Last contact: 8 hours ago</p>
+                                <div class="flex items-center space-x-2">
+                                    <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">Crisis</span>
+                                    <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded-full">Self-harm Risk</span>
+                                    <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">Risk: Crisis</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col space-y-2">
+                            <button onclick="contactNow('ST2024-134')" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-all">
+                                Contact Now
+                            </button>
+                            <button onclick="reviewCrisisPlan('ST2024-134')" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition-all">
+                                Crisis Plan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regular Student -->
+                <div class="student-card bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
+                                <span class="text-purple-700 font-semibold text-lg">ST</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-lg font-semibold text-gray-800">Student ID: ST2024-078</h4>
+                                <p class="text-sm text-gray-600 mb-2">Regular sessions • 8 sessions completed • Next: Jan 3 11:00 AM</p>
+                                <div class="flex items-center space-x-2">
+                                    <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded-full">Social Anxiety</span>
+                                    <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">Relationship Issues</span>
+                                    <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">Risk: Low</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col space-y-2">
+                            <button onclick="viewStudentProfile('ST2024-078')" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-all">
+                                View Profile
+                            </button>
+                            <button onclick="reviewProgress('ST2024-078')" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-all">
+                                Review Progress
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completing Treatment -->
+                <div class="student-card bg-indigo-50 border border-indigo-200 rounded-2xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <span class="text-indigo-700 font-semibold text-lg">ST</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-lg font-semibold text-gray-800">Student ID: ST2024-045</h4>
+                                <p class="text-sm text-gray-600 mb-2">Treatment completion phase • 12 sessions completed • Discharge planning</p>
+                                <div class="flex items-center space-x-2">
+                                    <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded-full">Eating Disorders</span>
+                                    <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">Treatment Success</span>
+                                    <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">Risk: Low</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col space-y-2">
+                            <button onclick="dischargePlanning('ST2024-045')" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-all">
+                                Discharge Planning
+                            </button>
+                            <button onclick="finalSession('ST2024-045')" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-all">
+                                Final Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More -->
+            <div class="text-center mt-8">
+                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-3 rounded-lg font-semibold transition-all">
+                    Load More Students
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openSideDrawer() {
+            document.getElementById('sideDrawer').classList.add('open');
+            document.getElementById('overlay').classList.add('show');
+        }
+
+        function closeSideDrawer() {
+            document.getElementById('sideDrawer').classList.remove('open');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        document.getElementById('overlay').addEventListener('click', closeSideDrawer);
+
+        function viewStudentProfile(studentId) {
+            alert(`Opening detailed profile for ${studentId}\n\nThis would show:\n• Complete session history\n• Assessment results\n• Treatment plans\n• Risk assessments\n• Progress notes\n• Contact information`);
+        }
+
+        function scheduleSession(studentId) {
+            alert(`Scheduling new session for ${studentId}\n\nThis would open the calendar with available time slots.`);
+        }
+
+        function prepareSession(studentId) {
+            alert(`Preparing initial assessment for ${studentId}\n\nThis would show:\n• Referral information\n• Assessment templates\n• Intake forms\n• Risk screening tools`);
+        }
+
+        function viewReferral(studentId) {
+            alert(`Viewing referral details for ${studentId}\n\nThis would show the original referral information and presenting concerns.`);
+        }
+
+        function scheduleUrgent(studentId) {
+            alert(`Scheduling urgent follow-up for ${studentId}\n\nThis would prioritize booking within 24-48 hours.`);
+        }
+
+        function contactStudent(studentId) {
+            alert(`Contacting ${studentId}\n\nThis would show contact options:\n• Email\n• Phone\n• SMS\n• Emergency contact`);
+        }
+
+        function contactNow(studentId) {
+            alert(`Initiating immediate contact with ${studentId}\n\nCrisis protocol activated. All contact methods available.`);
+        }
+
+        function reviewCrisisPlan(studentId) {
+            alert(`Reviewing crisis safety plan for ${studentId}\n\nThis would show:\n• Safety plan details\n• Emergency contacts\n• Coping strategies\n• Warning signs\n• Support network`);
+        }
+
+        function reviewProgress(studentId) {
+            alert(`Reviewing treatment progress for ${studentId}\n\nThis would show:\n• Progress charts\n• Goal achievements\n• Assessment comparisons\n• Treatment outcomes`);
+        }
+
+        function dischargePlanning(studentId) {
+            alert(`Opening discharge planning for ${studentId}\n\nThis would include:\n• Transition planning\n• Follow-up care\n• Resource connections\n• Relapse prevention`);
+        }
+
+        function finalSession(studentId) {
+            alert(`Scheduling final session for ${studentId}\n\nThis would include:\n• Treatment summary\n• Outcome evaluation\n• Discharge documentation`);
+        }
+    </script>
+</body>
+</html> 

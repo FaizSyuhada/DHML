@@ -46,6 +46,139 @@
             opacity: 1;
             visibility: visible;
         }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            /* Stack header content vertically on mobile */
+            .bg-gradient-to-r .flex.items-center.justify-between {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .bg-gradient-to-r .text-right {
+                align-self: flex-end;
+                text-align: right;
+            }
+
+            /* Session cards mobile optimization */
+            .session-card .flex.items-center.justify-between {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .session-card .flex.items-center:first-child {
+                width: 100%;
+            }
+
+            .session-card .text-right {
+                align-self: flex-end;
+            }
+
+            /* Status legend mobile optimization */
+            .flex.items-center.space-x-4.text-sm {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            /* Button sizing for touch */
+            button {
+                min-height: 44px;
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+
+            /* Form inputs */
+            input, select, textarea {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 16px 12px;
+                min-height: 44px;
+            }
+
+            /* Modal responsiveness */
+            .max-w-4xl, .max-w-5xl {
+                max-width: 100%;
+                margin: 1rem;
+            }
+
+            /* Grid responsive behavior */
+            .grid.grid-cols-1.md\\:grid-cols-4 {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .grid.grid-cols-1.lg\\:grid-cols-2 {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .grid.grid-cols-1.md\\:grid-cols-3 {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .grid.grid-cols-1.md\\:grid-cols-2 {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            /* Better text sizing for mobile */
+            .text-2xl {
+                font-size: 1.5rem;
+            }
+
+            .text-xl {
+                font-size: 1.125rem;
+            }
+
+            .text-3xl {
+                font-size: 1.75rem;
+            }
+
+            /* Improve pending actions and activity cards */
+            .flex.items-center.justify-between.p-3 {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .flex.items-center.justify-between.p-3 button {
+                align-self: flex-end;
+            }
+
+            /* Checkbox grid mobile optimization */
+            .grid.grid-cols-2.gap-2 {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Touch interactions */
+        @media (max-width: 768px) {
+            .session-card:active {
+                transform: scale(0.98);
+            }
+
+            button:active {
+                transform: scale(0.95);
+            }
+        }
+
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus states for keyboard navigation */
+        button:focus, input:focus, select:focus, textarea:focus {
+            outline: 2px solid #3B82F6;
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gray-50">
@@ -86,23 +219,23 @@
                     <i class="fas fa-home w-5"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                <a href="counsellor-schedule.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
                     <i class="fas fa-calendar-alt w-5"></i>
                     <span>My Schedule</span>
                 </a>
-                <a href="#" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                <a href="counsellor-students.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
                     <i class="fas fa-users w-5"></i>
                     <span>My Students</span>
                 </a>
-                <a href="#" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                <a href="counsellor-referrals.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
                     <i class="fas fa-exclamation-triangle w-5"></i>
                     <span>Referrals Queue</span>
                 </a>
-                <a href="#" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                <a href="counsellor-forum.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
                     <i class="fas fa-comments w-5"></i>
                     <span>Forum Moderation</span>
                 </a>
-                <a href="#" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                <a href="counsellor-reports.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
                     <i class="fas fa-chart-bar w-5"></i>
                     <span>Reports</span>
                 </a>
@@ -447,6 +580,686 @@
         </div>
     </div>
 
+    <!-- Session Detail Modal -->
+    <div id="sessionModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Session Details</h3>
+                <button onclick="closeSessionModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Student Profile Snapshot -->
+            <div class="bg-gray-50 rounded-2xl p-6 mb-6">
+                <h4 class="font-semibold text-gray-800 mb-4">Student Information</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="text-xs text-gray-500">Student ID</label>
+                        <div class="text-sm font-medium text-gray-800" id="modalStudentId">ST2024-156</div>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Session Type</label>
+                        <div class="text-sm font-medium text-gray-800" id="modalSessionType">Initial Assessment</div>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Previous Sessions</label>
+                        <div class="text-sm font-medium text-gray-800" id="modalPreviousSessions">0</div>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Risk Level</label>
+                        <div class="text-sm font-medium text-red-600" id="modalRiskLevel">Medium</div>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Presenting Issues</label>
+                        <div class="text-sm font-medium text-gray-800" id="modalIssues">Anxiety, Academic Stress</div>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Emergency Contact</label>
+                        <div class="text-sm font-medium text-gray-800" id="modalEmergencyContact">On file</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session Notes -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Session Notes</label>
+                <textarea id="sessionNotes" placeholder="Document session observations, interventions used, student responses..."
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none h-32"></textarea>
+            </div>
+
+            <!-- Risk Assessment -->
+            <div class="mb-6">
+                <h4 class="font-semibold text-gray-800 mb-4">Risk Assessment</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Overall Risk Level</label>
+                        <select id="riskLevel" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                            <option value="crisis">Crisis</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Follow-up Required</label>
+                        <select id="followupRequired" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="routine">Routine (2 weeks)</option>
+                            <option value="frequent" selected>Frequent (1 week)</option>
+                            <option value="urgent">Urgent (24-48 hours)</option>
+                            <option value="immediate">Immediate</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Risk Factors</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" class="rounded">
+                            <span class="text-sm">Self-harm thoughts</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" class="rounded">
+                            <span class="text-sm">Substance use</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" class="rounded" checked>
+                            <span class="text-sm">Academic stress</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" class="rounded">
+                            <span class="text-sm">Social isolation</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex space-x-3">
+                <button onclick="completeSession()" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition-all">
+                    <i class="fas fa-check mr-2"></i>Mark Complete
+                </button>
+                <button onclick="createReferral()" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold transition-all">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>Create Referral
+                </button>
+                <button onclick="rescheduleSession()" class="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white py-3 rounded-lg font-semibold transition-all">
+                    <i class="fas fa-calendar mr-2"></i>Reschedule
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Referrals Queue Modal -->
+    <div id="referralsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Referrals Queue</h3>
+                <button onclick="closeReferralsModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Urgent Referral -->
+            <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-4 mb-4">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">URGENT</span>
+                            <span class="text-sm text-gray-600">ST2024-134 • 2 hours ago</span>
+                        </div>
+                        <h4 class="font-semibold text-gray-800 mb-1">Crisis Intervention Required</h4>
+                        <p class="text-sm text-gray-600 mb-3">Student expressing thoughts of self-harm. Requires immediate psychiatric evaluation.</p>
+                        <div class="flex space-x-2">
+                            <button onclick="acceptReferral('urgent-1')" class="bg-red-600 text-white px-3 py-1 rounded text-xs font-medium">Accept</button>
+                            <button onclick="escalateReferral('urgent-1')" class="bg-orange-600 text-white px-3 py-1 rounded text-xs font-medium">Escalate</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- High Priority Referral -->
+            <div class="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-4 mb-4">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">HIGH PRIORITY</span>
+                            <span class="text-sm text-gray-600">ST2024-089 • 4 hours ago</span>
+                        </div>
+                        <h4 class="font-semibold text-gray-800 mb-1">Eating Disorder Assessment</h4>
+                        <p class="text-sm text-gray-600 mb-3">Signs of restrictive eating patterns and weight loss. Needs specialized assessment.</p>
+                        <div class="flex space-x-2">
+                            <button onclick="acceptReferral('high-1')" class="bg-yellow-600 text-white px-3 py-1 rounded text-xs font-medium">Accept</button>
+                            <button onclick="transferReferral('high-1')" class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-medium">Transfer to Specialist</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Standard Referral -->
+            <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-4">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">STANDARD</span>
+                            <span class="text-sm text-gray-600">ST2024-156 • 1 day ago</span>
+                        </div>
+                        <h4 class="font-semibold text-gray-800 mb-1">Anxiety Management Support</h4>
+                        <p class="text-sm text-gray-600 mb-3">Student experiencing test anxiety affecting academic performance.</p>
+                        <div class="flex space-x-2">
+                            <button onclick="acceptReferral('standard-1')" class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-medium">Accept</button>
+                            <button onclick="requestMoreInfo('standard-1')" class="bg-gray-600 text-white px-3 py-1 rounded text-xs font-medium">Request Info</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forum Moderation Modal -->
+    <div id="forumModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Forum Moderation</h3>
+                <button onclick="closeForumModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Flagged Post -->
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">FLAGGED</span>
+                            <span class="text-sm text-gray-600">NightOwl • 6 hours ago</span>
+                        </div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Late night anxiety - anyone else struggle with this?</h4>
+                        <p class="text-sm text-gray-600 mb-3">My anxiety always seems worse at night when I'm trying to sleep. Racing thoughts about everything I need to do, things I said during the day...</p>
+                        <div class="flex space-x-2">
+                            <button onclick="approvePost('post-1')" class="bg-green-600 text-white px-3 py-1 rounded text-xs font-medium">
+                                <i class="fas fa-check mr-1"></i>Approve
+                            </button>
+                            <button onclick="hidePost('post-1')" class="bg-yellow-600 text-white px-3 py-1 rounded text-xs font-medium">
+                                <i class="fas fa-eye-slash mr-1"></i>Hide
+                            </button>
+                            <button onclick="escalatePost('post-1')" class="bg-red-600 text-white px-3 py-1 rounded text-xs font-medium">
+                                <i class="fas fa-arrow-up mr-1"></i>Escalate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Another Flagged Post -->
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">REVIEW</span>
+                            <span class="text-sm text-gray-600">AnxiousCat • 3 hours ago</span>
+                        </div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Dealing with exam anxiety - what helps you?</h4>
+                        <p class="text-sm text-gray-600 mb-3">Finals are coming up and I'm feeling really overwhelmed. The breathing exercises from the modules help a bit...</p>
+                        <div class="flex space-x-2">
+                            <button onclick="approvePost('post-2')" class="bg-green-600 text-white px-3 py-1 rounded text-xs font-medium">
+                                <i class="fas fa-check mr-1"></i>Approve
+                            </button>
+                            <button onclick="hidePost('post-2')" class="bg-yellow-600 text-white px-3 py-1 rounded text-xs font-medium">
+                                <i class="fas fa-eye-slash mr-1"></i>Hide
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Modal -->
+    <div id="scheduleModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Weekly Schedule</h3>
+                <button onclick="closeScheduleModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Week Navigation -->
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span class="text-lg font-semibold text-gray-800">Dec 23 - Dec 29, 2024</span>
+                    <button class="p-2 text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="text-sm text-gray-600">
+                    <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full mr-2">85% utilized</span>
+                    <span>3 available slots this week</span>
+                </div>
+            </div>
+
+            <!-- Schedule Grid -->
+            <div class="bg-gray-50 rounded-2xl overflow-hidden">
+                <!-- Header Row -->
+                <div class="grid grid-cols-8 bg-gray-100 border-b">
+                    <div class="p-3 font-semibold text-gray-700">Time</div>
+                    <div class="p-3 font-semibold text-gray-700 text-center border-l">Mon<br><span class="text-sm font-normal">23</span></div>
+                    <div class="p-3 font-semibold text-gray-700 text-center border-l">Tue<br><span class="text-sm font-normal">24</span></div>
+                    <div class="p-3 font-semibold text-gray-700 text-center border-l">Wed<br><span class="text-sm font-normal">25</span></div>
+                    <div class="p-3 font-semibold text-gray-700 text-center border-l">Thu<br><span class="text-sm font-normal">26</span></div>
+                    <div class="p-3 font-semibold text-gray-700 text-center border-l bg-blue-50">Fri<br><span class="text-sm font-normal">27</span></div>
+                    <div class="p-3 font-semibold text-gray-700 text-center border-l">Sat<br><span class="text-sm font-normal">28</span></div>
+                    <div class="p-3 font-semibold text-gray-700 text-center border-l">Sun<br><span class="text-sm font-normal">29</span></div>
+                </div>
+
+                <!-- Time Slots -->
+                <div class="divide-y">
+                    <!-- 9:00 AM -->
+                    <div class="grid grid-cols-8 min-h-16">
+                        <div class="p-3 font-medium text-gray-600 bg-gray-100 border-r">9:00 AM</div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l bg-blue-50">
+                            <div class="bg-green-100 border border-green-300 rounded p-2 text-center">
+                                <div class="text-xs font-semibold text-green-800">ST2024-156</div>
+                                <div class="text-xs text-green-600">Initial Session</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                    </div>
+
+                    <!-- 10:00 AM -->
+                    <div class="grid grid-cols-8 min-h-16">
+                        <div class="p-3 font-medium text-gray-600 bg-gray-100 border-r">10:00 AM</div>
+                        <div class="p-2 border-l">
+                            <div class="bg-green-100 border border-green-300 rounded p-2 text-center">
+                                <div class="text-xs font-semibold text-green-800">ST2024-234</div>
+                                <div class="text-xs text-green-600">Follow-up</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l">
+                            <div class="bg-green-100 border border-green-300 rounded p-2 text-center">
+                                <div class="text-xs font-semibold text-green-800">ST2024-078</div>
+                                <div class="text-xs text-green-600">Regular</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l bg-blue-50">
+                            <div class="bg-yellow-100 border border-yellow-300 rounded p-2 text-center">
+                                <div class="text-xs font-semibold text-yellow-800">ST2024-089</div>
+                                <div class="text-xs text-yellow-600">Pending</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                    </div>
+
+                    <!-- 4:00 PM - Available Slots -->
+                    <div class="grid grid-cols-8 min-h-16">
+                        <div class="p-3 font-medium text-gray-600 bg-gray-100 border-r">4:00 PM</div>
+                        <div class="p-2 border-l">
+                            <div class="bg-purple-100 border border-purple-300 rounded p-2 text-center cursor-pointer hover:bg-purple-200">
+                                <div class="text-xs font-semibold text-purple-800">Available</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l">
+                            <div class="bg-purple-100 border border-purple-300 rounded p-2 text-center cursor-pointer hover:bg-purple-200">
+                                <div class="text-xs font-semibold text-purple-800">Available</div>
+                            </div>
+                        </div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l bg-blue-50"></div>
+                        <div class="p-2 border-l"></div>
+                        <div class="p-2 border-l"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-green-100 border border-green-300 rounded"></div>
+                    <span class="text-sm text-gray-600">Confirmed</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-yellow-100 border border-yellow-300 rounded"></div>
+                    <span class="text-sm text-gray-600">Pending</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-purple-100 border border-purple-300 rounded"></div>
+                    <span class="text-sm text-gray-600">Available</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 bg-red-100 border border-red-300 rounded"></div>
+                    <span class="text-sm text-gray-600">High Priority</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Students Modal -->
+    <div id="studentsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">My Students Caseload</h3>
+                <button onclick="closeStudentsModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="flex space-x-4 mb-6">
+                <div class="flex-1">
+                    <input type="text" placeholder="Search students..." 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <select class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option>All Students</option>
+                    <option>New This Week</option>
+                    <option>Follow-up Required</option>
+                    <option>Crisis Support</option>
+                    <option>Completed Treatment</option>
+                </select>
+            </div>
+
+            <!-- Students Grid -->
+            <div class="space-y-4">
+                <!-- Active Student -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="text-blue-700 font-semibold">ST</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Student ID: ST2024-156</h4>
+                                <p class="text-sm text-gray-600">Active since Dec 15, 2024 • 2 sessions completed</p>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full">Anxiety</span>
+                                    <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full">Academic Stress</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm font-medium text-green-600">Next: Tomorrow 10:00 AM</div>
+                            <div class="text-xs text-gray-500">Risk Level: Medium</div>
+                            <button class="mt-2 bg-blue-600 text-white px-3 py-1 rounded text-xs font-medium">View Profile</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Student -->
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                <span class="text-green-700 font-semibold">ST</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Student ID: ST2024-289</h4>
+                                <p class="text-sm text-gray-600">New referral • Initial assessment scheduled</p>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">New Patient</span>
+                                    <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">Depression</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm font-medium text-blue-600">Initial: Dec 30 2:00 PM</div>
+                            <div class="text-xs text-gray-500">Risk Level: Unknown</div>
+                            <button class="mt-2 bg-green-600 text-white px-3 py-1 rounded text-xs font-medium">Prepare Session</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Follow-up Required -->
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <span class="text-yellow-700 font-semibold">ST</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Student ID: ST2024-203</h4>
+                                <p class="text-sm text-gray-600">Last session: Dec 20 • Follow-up overdue</p>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full">PTSD</span>
+                                    <span class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded-full">Follow-up Required</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm font-medium text-red-600">Overdue by 3 days</div>
+                            <div class="text-xs text-gray-500">Risk Level: High</div>
+                            <button class="mt-2 bg-red-600 text-white px-3 py-1 rounded text-xs font-medium">Schedule Urgent</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Crisis Support -->
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                                <span class="text-red-700 font-semibold">ST</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Student ID: ST2024-134</h4>
+                                <p class="text-sm text-gray-600">Crisis intervention • Daily check-ins</p>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">Crisis</span>
+                                    <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded-full">Self-harm Risk</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm font-medium text-red-600">Daily check-in due</div>
+                            <div class="text-xs text-gray-500">Risk Level: Crisis</div>
+                            <button class="mt-2 bg-red-600 text-white px-3 py-1 rounded text-xs font-medium">Contact Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Stats -->
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-50 rounded-lg p-4">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600">24</div>
+                    <div class="text-sm text-gray-600">Active Students</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-green-600">3</div>
+                    <div class="text-sm text-gray-600">New This Week</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-yellow-600">7</div>
+                    <div class="text-sm text-gray-600">Follow-up Required</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-red-600">2</div>
+                    <div class="text-sm text-gray-600">Crisis Support</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reports Modal -->
+    <div id="reportsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Counsellor Reports</h3>
+                <button onclick="closeReportsModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Report Period -->
+            <div class="flex items-center space-x-4 mb-6">
+                <select class="px-4 py-2 border border-gray-300 rounded-lg">
+                    <option>This Month</option>
+                    <option>Last Month</option>
+                    <option>This Quarter</option>
+                    <option>This Year</option>
+                </select>
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium">
+                    <i class="fas fa-download mr-2"></i>Export PDF
+                </button>
+            </div>
+
+            <!-- Key Metrics Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-blue-50 rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-calendar-check text-blue-600 text-2xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-blue-600 mb-2">96</div>
+                    <div class="text-sm text-gray-600">Sessions This Month</div>
+                    <div class="text-xs text-green-600 mt-1">↑ 12% from last month</div>
+                </div>
+
+                <div class="bg-green-50 rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-star text-green-600 text-2xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-green-600 mb-2">4.8</div>
+                    <div class="text-sm text-gray-600">Student Satisfaction</div>
+                    <div class="text-xs text-green-600 mt-1">↑ 0.2 from last month</div>
+                </div>
+
+                <div class="bg-purple-50 rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-exchange-alt text-purple-600 text-2xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-purple-600 mb-2">94%</div>
+                    <div class="text-sm text-gray-600">Referral Success Rate</div>
+                    <div class="text-xs text-green-600 mt-1">↑ 3% from last month</div>
+                </div>
+
+                <div class="bg-orange-50 rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-exclamation-triangle text-orange-600 text-2xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-orange-600 mb-2">8</div>
+                    <div class="text-sm text-gray-600">Crisis Interventions</div>
+                    <div class="text-xs text-red-600 mt-1">↑ 2 from last month</div>
+                </div>
+            </div>
+
+            <!-- Detailed Statistics -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Session Breakdown -->
+                <div class="bg-white border border-gray-200 rounded-2xl p-6">
+                    <h4 class="font-semibold text-gray-800 mb-4">Session Breakdown</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Initial Assessments</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 25%"></div>
+                                </div>
+                                <span class="text-sm font-medium">24</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Follow-up Sessions</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 60%"></div>
+                                </div>
+                                <span class="text-sm font-medium">58</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Crisis Interventions</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-red-600 h-2 rounded-full" style="width: 8%"></div>
+                                </div>
+                                <span class="text-sm font-medium">8</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Group Sessions</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-purple-600 h-2 rounded-full" style="width: 6%"></div>
+                                </div>
+                                <span class="text-sm font-medium">6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Presenting Issues -->
+                <div class="bg-white border border-gray-200 rounded-2xl p-6">
+                    <h4 class="font-semibold text-gray-800 mb-4">Most Common Issues</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Anxiety Disorders</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-yellow-600 h-2 rounded-full" style="width: 45%"></div>
+                                </div>
+                                <span class="text-sm font-medium">43</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Academic Stress</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 35%"></div>
+                                </div>
+                                <span class="text-sm font-medium">34</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Depression</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-purple-600 h-2 rounded-full" style="width: 28%"></div>
+                                </div>
+                                <span class="text-sm font-medium">27</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Relationship Issues</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 18%"></div>
+                                </div>
+                                <span class="text-sm font-medium">17</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Trend -->
+            <div class="mt-6 bg-white border border-gray-200 rounded-2xl p-6">
+                <h4 class="font-semibold text-gray-800 mb-4">Performance Trends</h4>
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-chart-line text-4xl mb-4"></i>
+                    <p>Interactive charts would be displayed here showing:</p>
+                    <ul class="text-sm mt-2 space-y-1">
+                        <li>• Session volume over time</li>
+                        <li>• Student satisfaction trends</li>
+                        <li>• Outcome success rates</li>
+                        <li>• Referral patterns</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openSideDrawer() {
             document.getElementById('sideDrawer').classList.add('open');
@@ -462,9 +1275,89 @@
         document.getElementById('overlay').addEventListener('click', closeSideDrawer);
 
         function openSessionDetail(sessionId) {
-            // TODO: Navigate to session detail page
-            alert(`Opening session details for ${sessionId}\n\nThis would show:\n• Student profile snapshot\n• Session notes\n• Risk assessment\n• Previous session history\n• Action buttons (Complete, Refer, etc.)`);
+            document.getElementById('sessionModal').classList.remove('hidden');
         }
+
+        function closeSessionModal() {
+            document.getElementById('sessionModal').classList.add('hidden');
+        }
+
+        function completeSession() {
+            if (confirm('Mark this session as complete? Session notes will be saved to student record.')) {
+                alert('Session marked as complete. Notes saved successfully.');
+                closeSessionModal();
+            }
+        }
+
+        function createReferral() {
+            if (confirm('Create urgent referral for this student?')) {
+                alert('Referral created and submitted to senior counsellor for immediate review.');
+                closeSessionModal();
+            }
+        }
+
+        function rescheduleSession() {
+            alert('Reschedule request sent to student. They will receive email with new booking options.');
+            closeSessionModal();
+        }
+
+        function showReferralsModal() {
+            closeSideDrawer();
+            document.getElementById('referralsModal').classList.remove('hidden');
+        }
+
+        function closeReferralsModal() {
+            document.getElementById('referralsModal').classList.add('hidden');
+        }
+
+        function acceptReferral(referralId) {
+            if (confirm('Accept this referral and add to your caseload?')) {
+                alert(`Referral ${referralId} accepted. Student will be notified and appointment scheduled.`);
+            }
+        }
+
+        function escalateReferral(referralId) {
+            if (confirm('Escalate this referral to senior counsellor?')) {
+                alert(`Referral ${referralId} escalated to Dr. Michael Chen. They will be notified immediately.`);
+            }
+        }
+
+        function transferReferral(referralId) {
+            if (confirm('Transfer this referral to specialized service?')) {
+                alert(`Referral ${referralId} transferred to specialist. Student will be contacted within 24 hours.`);
+            }
+        }
+
+        function requestMoreInfo(referralId) {
+            alert(`Request for additional information sent. Referral ${referralId} status updated to "Pending Information".`);
+        }
+
+        function showForumModal() {
+            closeSideDrawer();
+            document.getElementById('forumModal').classList.remove('hidden');
+        }
+
+        function closeForumModal() {
+            document.getElementById('forumModal').classList.add('hidden');
+        }
+
+        function approvePost(postId) {
+            alert(`Post ${postId} approved and published to community forum.`);
+        }
+
+        function hidePost(postId) {
+            if (confirm('Hide this post from public view?')) {
+                alert(`Post ${postId} hidden. Author will be notified with community guidelines.`);
+            }
+        }
+
+        function escalatePost(postId) {
+            if (confirm('Escalate this post for senior review?')) {
+                alert(`Post ${postId} escalated to senior moderator for further action.`);
+            }
+        }
+
+
 
         // Update current time
         function updateTime() {
