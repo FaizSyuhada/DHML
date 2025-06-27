@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Counsellor - DMHLH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'peach-50': '#FFEADF',
+                        'sky-50': '#EFF8FF',
+                        'soft-pink': '#F8E8F5',
+                        'soft-green': '#E8F5E8',
+                        'soft-yellow': '#FFF8DC',
+                        'soft-purple': '#F0E8FF'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .time-slot {
+            transition: all 0.3s ease;
+        }
+        .time-slot:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .time-slot.selected {
+            background: linear-gradient(135deg, #8B5CF6, #EC4899);
+            color: white;
+        }
+        .time-slot.booked {
+            background: #F3F4F6;
+            color: #9CA3AF;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Top Navigation -->
+    <div class="bg-white shadow-sm border-b">
+        <div class="px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <button onclick="window.location.href='student-dashboard.html'" class="text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-calendar text-purple-500"></i>
+                    <h1 class="text-xl font-bold text-gray-800">Book Counsellor</h1>
+                </div>
+            </div>
+            <button class="text-gray-600 hover:text-gray-800">
+                <i class="fas fa-history text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto p-4">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-3xl p-6 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Schedule Your Session</h2>
+            <p class="text-gray-600">Choose a time that works best for you. Our counsellors are here to support your mental wellness journey.</p>
+        </div>
+
+        <!-- Counsellor Selection -->
+        <div class="bg-white rounded-3xl p-6 shadow-sm mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Select a Counsellor</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div onclick="selectCounsellor('sarah')" class="counsellor-card cursor-pointer p-4 border border-gray-200 rounded-xl hover:border-purple-300 hover:shadow-md transition-all">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold">SW</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">Dr. Sarah Wilson</h4>
+                            <p class="text-sm text-gray-600">Clinical Psychologist</p>
+                            <p class="text-xs text-gray-500 mt-1">Specializes in anxiety, depression, and student stress</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-sm font-medium text-green-600">Available</div>
+                            <div class="text-xs text-gray-500">12 slots this week</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div onclick="selectCounsellor('james')" class="counsellor-card cursor-pointer p-4 border border-gray-200 rounded-xl hover:border-purple-300 hover:shadow-md transition-all">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold">JL</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">Dr. James Lee</h4>
+                            <p class="text-sm text-gray-600">Counselling Psychologist</p>
+                            <p class="text-xs text-gray-500 mt-1">Specializes in mindfulness, relationships, and academic pressure</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-sm font-medium text-green-600">Available</div>
+                            <div class="text-xs text-gray-500">8 slots this week</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar -->
+        <div class="bg-white rounded-3xl p-6 shadow-sm">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-semibold text-gray-800">Select Date & Time</h3>
+                <div class="flex items-center space-x-2">
+                    <button onclick="previousWeek()" class="p-2 text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span id="weekRange" class="text-sm font-medium text-gray-700">Dec 23 - Dec 29, 2024</span>
+                    <button onclick="nextWeek()" class="p-2 text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Week View -->
+            <div class="grid grid-cols-7 gap-1 mb-4">
+                <div class="text-center text-sm font-medium text-gray-500 p-2">Mon</div>
+                <div class="text-center text-sm font-medium text-gray-500 p-2">Tue</div>
+                <div class="text-center text-sm font-medium text-gray-500 p-2">Wed</div>
+                <div class="text-center text-sm font-medium text-gray-500 p-2">Thu</div>
+                <div class="text-center text-sm font-medium text-gray-500 p-2">Fri</div>
+                <div class="text-center text-sm font-medium text-gray-500 p-2">Sat</div>
+                <div class="text-center text-sm font-medium text-gray-500 p-2">Sun</div>
+            </div>
+
+            <!-- Date Grid -->
+            <div class="grid grid-cols-7 gap-1 mb-6">
+                <div class="text-center p-2 text-gray-400">22</div>
+                <div onclick="selectDate('23')" class="date-cell cursor-pointer text-center p-2 hover:bg-purple-50 rounded-lg transition-colors">23</div>
+                <div onclick="selectDate('24')" class="date-cell cursor-pointer text-center p-2 hover:bg-purple-50 rounded-lg transition-colors">24</div>
+                <div onclick="selectDate('25')" class="date-cell cursor-pointer text-center p-2 hover:bg-purple-50 rounded-lg transition-colors text-red-600 font-semibold">25<br><span class="text-xs">Christmas</span></div>
+                <div onclick="selectDate('26')" class="date-cell cursor-pointer text-center p-2 hover:bg-purple-50 rounded-lg transition-colors">26</div>
+                <div onclick="selectDate('27')" class="date-cell cursor-pointer text-center p-2 hover:bg-purple-50 rounded-lg transition-colors bg-purple-100 border border-purple-300">27</div>
+                <div onclick="selectDate('28')" class="date-cell cursor-pointer text-center p-2 hover:bg-purple-50 rounded-lg transition-colors">28</div>
+            </div>
+
+            <!-- Time Slots -->
+            <div id="timeSlots" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div onclick="selectTimeSlot(this, '09:00')" class="time-slot bg-white border border-gray-200 rounded-lg p-3 text-center cursor-pointer">
+                    <div class="font-medium">9:00 AM</div>
+                    <div class="text-xs text-gray-500 mt-1">Available</div>
+                </div>
+                <div onclick="selectTimeSlot(this, '10:00')" class="time-slot bg-white border border-gray-200 rounded-lg p-3 text-center cursor-pointer">
+                    <div class="font-medium">10:00 AM</div>
+                    <div class="text-xs text-gray-500 mt-1">Available</div>
+                </div>
+                <div class="time-slot booked bg-gray-100 border border-gray-200 rounded-lg p-3 text-center">
+                    <div class="font-medium">11:00 AM</div>
+                    <div class="text-xs text-gray-400 mt-1">Booked</div>
+                </div>
+                <div onclick="selectTimeSlot(this, '12:00')" class="time-slot bg-white border border-gray-200 rounded-lg p-3 text-center cursor-pointer">
+                    <div class="font-medium">12:00 PM</div>
+                    <div class="text-xs text-gray-500 mt-1">Available</div>
+                </div>
+                <div onclick="selectTimeSlot(this, '14:00')" class="time-slot bg-white border border-gray-200 rounded-lg p-3 text-center cursor-pointer">
+                    <div class="font-medium">2:00 PM</div>
+                    <div class="text-xs text-gray-500 mt-1">Available</div>
+                </div>
+                <div onclick="selectTimeSlot(this, '15:00')" class="time-slot bg-white border border-gray-200 rounded-lg p-3 text-center cursor-pointer">
+                    <div class="font-medium">3:00 PM</div>
+                    <div class="text-xs text-gray-500 mt-1">Available</div>
+                </div>
+                <div class="time-slot booked bg-gray-100 border border-gray-200 rounded-lg p-3 text-center">
+                    <div class="font-medium">4:00 PM</div>
+                    <div class="text-xs text-gray-400 mt-1">Booked</div>
+                </div>
+                <div onclick="selectTimeSlot(this, '16:00')" class="time-slot bg-white border border-gray-200 rounded-lg p-3 text-center cursor-pointer">
+                    <div class="font-medium">4:00 PM</div>
+                    <div class="text-xs text-gray-500 mt-1">Available</div>
+                </div>
+            </div>
+
+            <!-- Book Button -->
+            <div class="mt-6 pt-6 border-t">
+                <button id="bookButton" onclick="showConfirmationModal()" disabled class="w-full bg-gray-300 text-gray-500 py-3 rounded-lg font-semibold transition-all disabled:cursor-not-allowed">
+                    Select a counsellor, date and time to book
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-calendar-check text-white text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Confirm Your Booking</h3>
+                <p class="text-gray-600">Please review your session details</p>
+            </div>
+
+            <!-- Booking Details -->
+            <div class="bg-gray-50 rounded-xl p-4 mb-6">
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Counsellor:</span>
+                        <span id="confirmCounsellor" class="font-medium">Dr. Sarah Wilson</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Date:</span>
+                        <span id="confirmDate" class="font-medium">Friday, Dec 27, 2024</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Time:</span>
+                        <span id="confirmTime" class="font-medium">2:00 PM</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Duration:</span>
+                        <span class="font-medium">50 minutes</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Session Type:</span>
+                        <span class="font-medium">Individual Counselling</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Session Notes (Optional)</label>
+                <textarea id="sessionNotes" placeholder="Anything specific you'd like to discuss..." 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" 
+                    rows="3"></textarea>
+            </div>
+
+            <!-- Important Notice -->
+            <div class="bg-soft-yellow rounded-xl p-4 mb-6">
+                <div class="flex items-start space-x-2">
+                    <i class="fas fa-info-circle text-yellow-600 mt-1"></i>
+                    <div class="text-sm">
+                        <p class="font-medium text-gray-800 mb-1">Important:</p>
+                        <ul class="text-gray-600 space-y-1">
+                            <li>• Please arrive 5 minutes early</li>
+                            <li>• Cancellations require 24hr notice</li>
+                            <li>• You'll receive a confirmation email</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex space-x-3">
+                <button onclick="closeConfirmationModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold transition-all">
+                    Cancel
+                </button>
+                <button onclick="confirmBooking()" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold transition-all">
+                    Confirm Booking
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full text-center">
+            <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check text-white text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Booking Confirmed!</h3>
+            <p class="text-gray-600 mb-6">Your counselling session has been successfully scheduled. You'll receive a confirmation email shortly.</p>
+            
+            <div class="bg-green-50 rounded-xl p-4 mb-6">
+                <p class="text-sm text-green-700">
+                    <i class="fas fa-calendar-alt mr-2"></i>
+                    <span id="successDetails">Friday, Dec 27 at 2:00 PM with Dr. Sarah Wilson</span>
+                </p>
+            </div>
+
+            <div class="space-y-3">
+                <button onclick="addToCalendar()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-all">
+                    Add to Calendar
+                </button>
+                <button onclick="closeSuccessModal()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold transition-all">
+                    Back to Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedCounsellor = null;
+        let selectedDate = '27';
+        let selectedTime = null;
+
+        function selectCounsellor(counsellorId) {
+            // Remove previous selection
+            document.querySelectorAll('.counsellor-card').forEach(card => {
+                card.classList.remove('border-purple-500', 'bg-purple-50');
+            });
+            
+            // Add selection
+            event.currentTarget.classList.add('border-purple-500', 'bg-purple-50');
+            selectedCounsellor = counsellorId;
+            updateBookButton();
+        }
+
+        function selectDate(date) {
+            // Remove previous selection
+            document.querySelectorAll('.date-cell').forEach(cell => {
+                cell.classList.remove('bg-purple-100', 'border', 'border-purple-300');
+            });
+            
+            // Add selection
+            event.currentTarget.classList.add('bg-purple-100', 'border', 'border-purple-300');
+            selectedDate = date;
+            updateBookButton();
+        }
+
+        function selectTimeSlot(element, time) {
+            if (element.classList.contains('booked')) return;
+            
+            // Remove previous selection
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            
+            // Add selection
+            element.classList.add('selected');
+            selectedTime = time;
+            updateBookButton();
+        }
+
+        function updateBookButton() {
+            const button = document.getElementById('bookButton');
+            
+            if (selectedCounsellor && selectedDate && selectedTime) {
+                button.disabled = false;
+                button.className = 'w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold transition-all';
+                button.textContent = 'Book Session';
+            } else {
+                button.disabled = true;
+                button.className = 'w-full bg-gray-300 text-gray-500 py-3 rounded-lg font-semibold transition-all disabled:cursor-not-allowed';
+                button.textContent = 'Select a counsellor, date and time to book';
+            }
+        }
+
+        function showConfirmationModal() {
+            if (!selectedCounsellor || !selectedDate || !selectedTime) return;
+            
+            // Update modal content
+            const counsellorName = selectedCounsellor === 'sarah' ? 'Dr. Sarah Wilson' : 'Dr. James Lee';
+            document.getElementById('confirmCounsellor').textContent = counsellorName;
+            document.getElementById('confirmDate').textContent = `Friday, Dec ${selectedDate}, 2024`;
+            document.getElementById('confirmTime').textContent = formatTime(selectedTime);
+            
+            document.getElementById('confirmationModal').classList.remove('hidden');
+        }
+
+        function closeConfirmationModal() {
+            document.getElementById('confirmationModal').classList.add('hidden');
+        }
+
+        function confirmBooking() {
+            closeConfirmationModal();
+            
+            // Update success modal
+            const counsellorName = selectedCounsellor === 'sarah' ? 'Dr. Sarah Wilson' : 'Dr. James Lee';
+            const details = `Friday, Dec ${selectedDate} at ${formatTime(selectedTime)} with ${counsellorName}`;
+            document.getElementById('successDetails').textContent = details;
+            
+            document.getElementById('successModal').classList.remove('hidden');
+        }
+
+        function closeSuccessModal() {
+            window.location.href = 'student-dashboard.html';
+        }
+
+        function addToCalendar() {
+            // TODO: Implement calendar integration
+            alert('Calendar integration would be implemented here. The session has been added to your DMHLH calendar.');
+            closeSuccessModal();
+        }
+
+        function formatTime(time) {
+            const hour = parseInt(time.split(':')[0]);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const displayHour = hour > 12 ? hour - 12 : hour;
+            return `${displayHour}:00 ${ampm}`;
+        }
+
+        function previousWeek() {
+            // TODO: Implement week navigation
+            console.log('Previous week');
+        }
+
+        function nextWeek() {
+            // TODO: Implement week navigation
+            console.log('Next week');
+        }
+
+        // Initialize with default date selected
+        document.addEventListener('DOMContentLoaded', function() {
+            selectDate('27');
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Tracker - DMHLH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'peach-50': '#FFEADF',
+                        'sky-50': '#EFF8FF',
+                        'soft-pink': '#F8E8F5',
+                        'soft-green': '#E8F5E8',
+                        'soft-yellow': '#FFF8DC',
+                        'soft-purple': '#F0E8FF'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .mood-emoji {
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .mood-emoji:hover {
+            transform: scale(1.1);
+        }
+        .mood-emoji.selected {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.5));
+        }
+        .side-drawer {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .side-drawer.open {
+            transform: translateX(0);
+        }
+        .overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Mobile Menu Overlay -->
+    <div id="overlay" class="overlay fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+
+    <!-- Side Navigation Drawer -->
+    <nav id="sideDrawer" class="side-drawer fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-purple-400 to-pink-400 rounded-full p-2">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">DMHLH</span>
+                </div>
+                <button onclick="closeSideDrawer()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- User Profile -->
+            <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 mb-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold">ET</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800">En Thong</h3>
+                        <p class="text-sm text-gray-600">Student</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <div class="space-y-2">
+                <a href="student-dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="literacy-modules.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-book w-5"></i>
+                    <span>Literacy Modules</span>
+                </a>
+                <a href="self-assessment.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-clipboard-check w-5"></i>
+                    <span>Self Assessment</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 bg-purple-50 text-purple-700 rounded-lg">
+                    <i class="fas fa-heart w-5"></i>
+                    <span>Mood Tracker</span>
+                </a>
+                <a href="ai-chatbot.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-robot w-5"></i>
+                    <span>AI Chatbot</span>
+                </a>
+                <a href="book-counsellor.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-calendar w-5"></i>
+                    <span>Book Counsellor</span>
+                </a>
+                <a href="forum.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-comments w-5"></i>
+                    <span>Forum</span>
+                </a>
+            </div>
+
+            <!-- Logout -->
+            <div class="absolute bottom-6 left-6 right-6">
+                <button onclick="window.location.href='login.html'" class="flex items-center space-x-3 w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Top Navigation -->
+    <div class="bg-white shadow-sm border-b">
+        <div class="px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <button onclick="openSideDrawer()" class="text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-heart text-pink-500"></i>
+                    <h1 class="text-xl font-bold text-gray-800">Mood Tracker</h1>
+                </div>
+            </div>
+            <button class="text-gray-600 hover:text-gray-800">
+                <i class="fas fa-chart-line text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-2xl mx-auto p-4">
+        <!-- Today's Mood Entry -->
+        <div class="bg-white rounded-3xl p-6 shadow-sm mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">How are you feeling today?</h2>
+            <p class="text-gray-600 mb-6">Select your current mood and add any notes</p>
+            
+            <!-- Mood Selection -->
+            <div class="flex justify-center space-x-4 mb-6">
+                <div class="text-center">
+                    <div class="mood-emoji" data-mood="very-happy" onclick="selectMood('very-happy', '😊')">😊</div>
+                    <p class="text-xs text-gray-600 mt-1">Great</p>
+                </div>
+                <div class="text-center">
+                    <div class="mood-emoji" data-mood="happy" onclick="selectMood('happy', '🙂')">🙂</div>
+                    <p class="text-xs text-gray-600 mt-1">Good</p>
+                </div>
+                <div class="text-center">
+                    <div class="mood-emoji" data-mood="neutral" onclick="selectMood('neutral', '😐')">😐</div>
+                    <p class="text-xs text-gray-600 mt-1">Okay</p>
+                </div>
+                <div class="text-center">
+                    <div class="mood-emoji" data-mood="sad" onclick="selectMood('sad', '🙁')">🙁</div>
+                    <p class="text-xs text-gray-600 mt-1">Low</p>
+                </div>
+                <div class="text-center">
+                    <div class="mood-emoji" data-mood="very-sad" onclick="selectMood('very-sad', '😢')">😢</div>
+                    <p class="text-xs text-gray-600 mt-1">Difficult</p>
+                </div>
+            </div>
+
+            <!-- Note Field -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Add a note (optional)</label>
+                <textarea id="moodNote" placeholder="What's on your mind today?" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all" 
+                    rows="3"></textarea>
+            </div>
+
+            <!-- Save Button -->
+            <button id="saveMoodBtn" onclick="saveMood()" disabled 
+                class="w-full bg-gray-300 text-gray-500 py-3 rounded-lg font-semibold transition-all disabled:cursor-not-allowed">
+                Select a mood to save
+            </button>
+        </div>
+
+        <!-- Timeline View -->
+        <div class="bg-white rounded-3xl p-6 shadow-sm">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">Your Mood Timeline</h3>
+                <button class="text-purple-600 hover:text-purple-700 text-sm font-medium">
+                    View All
+                </button>
+            </div>
+
+            <!-- Timeline Items -->
+            <div class="space-y-4">
+                <!-- Today -->
+                <div id="todayEntry" class="hidden flex items-center space-x-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                    <div class="text-3xl" id="todayEmoji">😊</div>
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-semibold text-gray-800">Today</span>
+                            <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Just now</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mt-1" id="todayNote">Feeling good about the progress I'm making.</p>
+                    </div>
+                </div>
+
+                <!-- Yesterday -->
+                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                    <div class="text-3xl">🙂</div>
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-semibold text-gray-800">Yesterday</span>
+                            <span class="text-xs text-gray-500">Dec 26</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mt-1">Had a productive day with some meditation.</p>
+                    </div>
+                </div>
+
+                <!-- Dec 25 -->
+                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                    <div class="text-3xl">😐</div>
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-semibold text-gray-800">Christmas Day</span>
+                            <span class="text-xs text-gray-500">Dec 25</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mt-1">Mixed feelings during the holidays.</p>
+                    </div>
+                </div>
+
+                <!-- Dec 24 -->
+                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                    <div class="text-3xl">😊</div>
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-semibold text-gray-800">Christmas Eve</span>
+                            <span class="text-xs text-gray-500">Dec 24</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mt-1">Excited for the holidays! Spent time with family.</p>
+                    </div>
+                </div>
+
+                <!-- Dec 23 -->
+                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                    <div class="text-3xl">🙁</div>
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-semibold text-gray-800">Last Monday</span>
+                            <span class="text-xs text-gray-500">Dec 23</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mt-1">Feeling stressed about exams. Used the breathing exercises.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weekly Summary -->
+            <div class="mt-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">This Week's Insights</h4>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <span class="text-gray-600">Average mood:</span>
+                        <span class="font-medium text-gray-800 ml-1">Good 😊</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-600">Streak:</span>
+                        <span class="font-medium text-gray-800 ml-1">7 days 🔥</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-600">Best day:</span>
+                        <span class="font-medium text-gray-800 ml-1">Christmas Eve</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-600">Improvement:</span>
+                        <span class="font-medium text-green-600 ml-1">+15% ↗️</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Helpful Tips -->
+        <div class="mt-6 bg-soft-green rounded-2xl p-6">
+            <div class="flex items-start space-x-3">
+                <div class="bg-green-100 rounded-full p-2 mt-1">
+                    <i class="fas fa-lightbulb text-green-600"></i>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-2">💡 Mood Tracking Tips</h4>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• Track consistently for better insights</li>
+                        <li>• Be honest about your feelings</li>
+                        <li>• Look for patterns over time</li>
+                        <li>• Use notes to remember what influenced your mood</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openSideDrawer() {
+            document.getElementById('sideDrawer').classList.add('open');
+            document.getElementById('overlay').classList.add('show');
+        }
+
+        function closeSideDrawer() {
+            document.getElementById('sideDrawer').classList.remove('open');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        // Close drawer when clicking overlay
+        document.getElementById('overlay').addEventListener('click', closeSideDrawer);
+
+        let selectedMood = null;
+        let selectedEmoji = null;
+
+        function selectMood(mood, emoji) {
+            // Remove previous selection
+            document.querySelectorAll('.mood-emoji').forEach(el => {
+                el.classList.remove('selected');
+            });
+
+            // Add selection to clicked emoji
+            document.querySelector(`[data-mood="${mood}"]`).classList.add('selected');
+            
+            selectedMood = mood;
+            selectedEmoji = emoji;
+
+            // Enable save button
+            const saveBtn = document.getElementById('saveMoodBtn');
+            saveBtn.disabled = false;
+            saveBtn.className = 'w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold transition-all';
+            saveBtn.textContent = 'Save Mood Entry';
+        }
+
+        function saveMood() {
+            if (!selectedMood) return;
+
+            const note = document.getElementById('moodNote').value || 'No additional notes.';
+            
+            // Update today's entry
+            const todayEntry = document.getElementById('todayEntry');
+            const todayEmoji = document.getElementById('todayEmoji');
+            const todayNote = document.getElementById('todayNote');
+            
+            todayEmoji.textContent = selectedEmoji;
+            todayNote.textContent = note;
+            todayEntry.classList.remove('hidden');
+
+            // Show success message
+            showToast('✅ Mood saved successfully!', 'success');
+
+            // Reset form
+            document.querySelectorAll('.mood-emoji').forEach(el => {
+                el.classList.remove('selected');
+            });
+            document.getElementById('moodNote').value = '';
+            
+            const saveBtn = document.getElementById('saveMoodBtn');
+            saveBtn.disabled = true;
+            saveBtn.className = 'w-full bg-gray-300 text-gray-500 py-3 rounded-lg font-semibold transition-all disabled:cursor-not-allowed';
+            saveBtn.textContent = 'Mood saved for today';
+
+            selectedMood = null;
+            selectedEmoji = null;
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all transform translate-x-full`;
+            
+            if (type === 'success') {
+                toast.classList.add('bg-green-500', 'text-white');
+            } else {
+                toast.classList.add('bg-blue-500', 'text-white');
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Auto dismiss
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html> 

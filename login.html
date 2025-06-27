@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - DMHLH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'peach-50': '#FFEADF',
+                        'sky-50': '#EFF8FF',
+                        'soft-pink': '#F8E8F5',
+                        'soft-green': '#E8F5E8',
+                        'soft-yellow': '#FFF8DC',
+                        'soft-purple': '#F0E8FF'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .btn-ripple:active {
+            transform: scale(0.98);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #EFF8FF 0%, #FFEADF 50%, #F8E8F5 100%);
+        }
+        .illustration-person {
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 300'%3E%3C!-- Person in meditation pose --%3E%3Cellipse cx='100' cy='280' rx='80' ry='20' fill='%23E5E7EB'/%3E%3C!-- Shadow --%3E%3Cpath fill='%23A855F7' d='M100 80c20 0 36 16 36 36v40c0 20-16 36-36 36s-36-16-36-36v-40c0-20 16-36 36-36z'/%3E%3C!-- Torso --%3E%3Ccircle cx='100' cy='60' r='25' fill='%23D4A574'/%3E%3C!-- Head --%3E%3Cpath fill='%23374151' d='M85 45c0-15 10-25 15-25s15 10 15 25c0 5-5 10-15 10s-15-5-15-10z'/%3E%3C!-- Hair --%3E%3Cpath fill='%23A855F7' d='M70 120l-25 40c-5 8 0 20 15 20h10l20-50z'/%3E%3C!-- Left arm --%3E%3Cpath fill='%23A855F7' d='M130 120l25 40c5 8 0 20-15 20h-10l-20-50z'/%3E%3C!-- Right arm --%3E%3Cpath fill='%23FCD34D' d='M70 200l-15 60c-2 8 5 15 15 15h5l15-70z'/%3E%3C!-- Left leg --%3E%3Cpath fill='%23FCD34D' d='M130 200l15 60c2 8-5 15-15 15h-5l-15-70z'/%3E%3C!-- Right leg --%3E%3C/svg%3E") no-repeat center;
+            background-size: contain;
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-sm shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <button onclick="window.location.href='index.html'" class="flex items-center space-x-3">
+                    <i class="fas fa-arrow-left text-gray-600 text-xl"></i>
+                </button>
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-purple-400 to-pink-400 rounded-full p-2">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">DMHLH</span>
+                </div>
+                <div class="w-10"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="min-h-screen flex items-center justify-center px-4 py-12">
+        <div class="max-w-md w-full">
+            <!-- Illustration -->
+            <div class="text-center mb-8">
+                <div class="w-48 h-64 mx-auto mb-6 illustration-person"></div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">
+                    Helping you feel<br>better, every day
+                </h1>
+            </div>
+
+            <!-- Login Form -->
+            <div class="bg-white rounded-3xl shadow-xl p-8">
+                <div class="text-center mb-6">
+                    <div class="flex items-center justify-center space-x-2 mb-2">
+                        <div class="bg-gradient-to-r from-purple-400 to-pink-400 rounded-full p-1">
+                            <i class="fas fa-brain text-white text-sm"></i>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-700">DMHLH</span>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Welcome back!</h2>
+                </div>
+
+                <!-- Error Message (hidden by default) -->
+                <div id="errorMessage" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        <span>Service unavailable. Please try again later.</span>
+                    </div>
+                </div>
+
+                <form id="loginForm">
+                    <div class="space-y-4">
+                        <div>
+                            <input type="text" id="username" placeholder="Username" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all">
+                        </div>
+                        <div>
+                            <input type="password" id="password" placeholder="Password" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all">
+                        </div>
+                        <div class="text-center">
+                            <a href="#" class="text-sm text-gray-600 hover:text-purple-600 transition-colors">Forgot your password?</a>
+                        </div>
+                        <button type="submit" class="w-full bg-gray-800 hover:bg-gray-900 text-white py-3 rounded-lg font-semibold btn-ripple transition-all">
+                            Log in
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-8">
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white text-gray-500">Or</span>
+                        </div>
+                    </div>
+
+                    <button onclick="handleUniversityLogin()" class="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold btn-ripple transition-all">
+                        Login with University ID
+                    </button>
+                </div>
+
+                <!-- Quick Access Buttons for Demo -->
+                <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                    <p class="text-xs text-gray-500 mb-3 text-center">Demo Quick Access:</p>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <button onclick="loginAs('student')" class="bg-blue-100 text-blue-700 px-3 py-2 rounded">Student</button>
+                        <button onclick="loginAs('counsellor')" class="bg-green-100 text-green-700 px-3 py-2 rounded">Counsellor</button>
+                        <button onclick="loginAs('faculty')" class="bg-yellow-100 text-yellow-700 px-3 py-2 rounded">Faculty</button>
+                        <button onclick="loginAs('admin')" class="bg-red-100 text-red-700 px-3 py-2 rounded">Admin</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="text-center mt-8">
+                <p class="text-xs text-gray-500">© 2025 MentalHealthAware Team | <a href="#" class="hover:text-purple-600">Privacy Policy</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Reset Modal -->
+    <div id="resetModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-6 m-4 max-w-sm w-full">
+            <div class="text-center mb-4">
+                <div class="bg-red-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800">You will be redirected outside DMHLH</h3>
+                <p class="text-sm text-gray-600 mt-2">This will take you to the university password reset system.</p>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="closeResetModal()" class="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg">Go back</button>
+                <button onclick="proceedReset()" class="flex-1 bg-red-500 text-white py-2 px-4 rounded-lg">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                showError('Please fill in all fields.');
+                return;
+            }
+            
+            // Simulate login validation
+            if (username === 'thong04' && password === '1') {
+                window.location.href = 'student-dashboard.html';
+            } else {
+                showError('Invalid username or password.');
+            }
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.querySelector('span').textContent = message;
+            errorDiv.classList.remove('hidden');
+            setTimeout(() => {
+                errorDiv.classList.add('hidden');
+            }, 5000);
+        }
+
+        function handleUniversityLogin() {
+            // Redirect to University SSO system
+            window.location.href = 'sso.html';
+        }
+
+        function loginAs(role) {
+            // Quick demo access
+            switch(role) {
+                case 'student':
+                    window.location.href = 'student-dashboard.html';
+                    break;
+                case 'counsellor':
+                    window.location.href = 'counsellor-dashboard.html';
+                    break;
+                case 'faculty':
+                    window.location.href = 'faculty-dashboard.html';
+                    break;
+                case 'admin':
+                    window.location.href = 'admin-dashboard.html';
+                    break;
+            }
+        }
+
+        function showResetModal() {
+            document.getElementById('resetModal').classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            document.getElementById('resetModal').classList.add('hidden');
+        }
+
+        function proceedReset() {
+            alert('Redirecting to university password reset system...');
+            closeResetModal();
+        }
+
+        // Forgot password link
+        document.querySelector('a[href="#"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            showResetModal();
+        });
+
+        // Add button ripple effect
+        document.querySelectorAll('.btn-ripple').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.height, rect.width);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+    </script>
+</body>
+</html> 

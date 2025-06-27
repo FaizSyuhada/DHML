@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - DMHLH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'peach-50': '#FFEADF',
+                        'sky-50': '#EFF8FF',
+                        'soft-pink': '#F8E8F5',
+                        'soft-green': '#E8F5E8',
+                        'soft-yellow': '#FFF8DC',
+                        'soft-purple': '#F0E8FF'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .btn-ripple:active {
+            transform: scale(0.98);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #EFF8FF 0%, #FFEADF 50%, #F8E8F5 100%);
+        }
+        .side-drawer {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .side-drawer.open {
+            transform: translateX(0);
+        }
+        .overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Mobile Menu Overlay -->
+    <div id="overlay" class="overlay fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+
+    <!-- Side Navigation Drawer -->
+    <nav id="sideDrawer" class="side-drawer fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-purple-400 to-pink-400 rounded-full p-2">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">DMHLH</span>
+                </div>
+                <button onclick="closeSideDrawer()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- User Profile -->
+            <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 mb-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold">ET</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800">En Thong</h3>
+                        <p class="text-sm text-gray-600">Student</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <div class="space-y-2">
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 bg-purple-50 text-purple-700 rounded-lg">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="literacy-modules.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-book w-5"></i>
+                    <span>Literacy Modules</span>
+                </a>
+                <a href="self-assessment.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-clipboard-check w-5"></i>
+                    <span>Self Assessment</span>
+                </a>
+                <a href="mood-tracker.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-heart w-5"></i>
+                    <span>Mood Tracker</span>
+                </a>
+                <a href="ai-chatbot.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-robot w-5"></i>
+                    <span>AI Chatbot</span>
+                </a>
+                <a href="book-counsellor.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-calendar w-5"></i>
+                    <span>Book Counsellor</span>
+                </a>
+                <a href="forum.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-comments w-5"></i>
+                    <span>Forum</span>
+                </a>
+            </div>
+
+            <!-- Logout -->
+            <div class="absolute bottom-6 left-6 right-6">
+                <button onclick="window.location.href='login.html'" class="flex items-center space-x-3 w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="min-h-screen">
+        <!-- Top Navigation -->
+        <div class="bg-white shadow-sm border-b">
+            <div class="px-4 py-4 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button onclick="openSideDrawer()" class="text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-leaf text-green-500"></i>
+                        <h1 class="text-xl font-bold text-gray-800">Hi, En Thong</h1>
+                    </div>
+                </div>
+                <button class="text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-ellipsis-h text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-4 max-w-7xl mx-auto">
+            <!-- Category Tabs -->
+            <div class="flex space-x-2 overflow-x-auto pb-4 mb-6">
+                <button onclick="switchCategory('sleep')" class="category-tab bg-white px-6 py-3 rounded-full text-gray-600 whitespace-nowrap border border-gray-200 hover:border-green-300 transition-all">
+                    <i class="fas fa-moon mr-2"></i>Sleep
+                </button>
+                <button onclick="switchCategory('inner-peace')" class="category-tab active bg-gray-800 px-6 py-3 rounded-full text-white whitespace-nowrap border border-gray-800">
+                    <i class="fas fa-heart mr-2"></i>Inner Peace
+                </button>
+                <button onclick="switchCategory('stress')" class="category-tab bg-white px-6 py-3 rounded-full text-gray-600 whitespace-nowrap border border-gray-200 hover:border-yellow-300 transition-all">
+                    <i class="fas fa-shield-alt mr-2"></i>Stress
+                </button>
+                <button onclick="switchCategory('anxiety')" class="category-tab bg-white px-6 py-3 rounded-full text-gray-600 whitespace-nowrap border border-gray-200 hover:border-pink-300 transition-all">
+                    <i class="fas fa-smile mr-2"></i>Anxiety
+                </button>
+            </div>
+
+            <!-- Featured Module -->
+            <div class="bg-peach-50 rounded-3xl p-6 mb-6 relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-2">Zen Meditation</h2>
+                            <div class="flex items-center space-x-4 text-sm text-gray-600">
+                                <span class="flex items-center">
+                                    <i class="fas fa-clock mr-1"></i>
+                                    20 min
+                                </span>
+                                <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
+                                    New
+                                </span>
+                            </div>
+                        </div>
+                        <button class="bg-white bg-opacity-80 p-3 rounded-full shadow-lg hover:shadow-xl transition-shadow">
+                            <i class="fas fa-play text-purple-600 text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Illustration -->
+                <div class="absolute right-6 bottom-0 w-32 h-32 opacity-80">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath fill='%23A855F7' d='M100 60c20 0 36 16 36 36v20c0 20-16 36-36 36s-36-16-36-36v-20c0-20 16-36 36-36z'/%3E%3Ccircle cx='100' cy='45' r='15' fill='%23D4A574'/%3E%3Cpath fill='%23374151' d='M90 35c0-8 5-15 10-15s10 7 10 15c0 3-3 5-10 5s-10-2-10-5z'/%3E%3Cpath fill='%23A855F7' d='M70 90l-20 30c-3 5 0 12 8 12h8l15-35z'/%3E%3Cpath fill='%23A855F7' d='M130 90l20 30c3 5 0 12-8 12h-8l-15-35z'/%3E%3Cpath fill='%23FCD34D' d='M80 130l-10 40c-1 5 3 8 8 8h3l8-45z'/%3E%3Cpath fill='%23FCD34D' d='M120 130l10 40c1 5-3 8-8 8h-3l-8-45z'/%3E%3Cpath fill='%23E8F5E8' d='M160 150c8 0 15 7 15 15s-7 15-15 15-15-7-15-15 7-15 15-15z'/%3E%3Cpath fill='%23E8F5E8' d='M170 140l5-10c2-4 7-4 9 0l5 10c2 4-1 8-5 8h-9c-4 0-7-4-5-8z'/%3E%3C/svg%3E" alt="Meditation" class="w-full h-full">
+                </div>
+            </div>
+
+            <!-- Module Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- Reflection -->
+                <div class="bg-sky-50 rounded-2xl p-6 relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Reflection</h3>
+                        <div class="flex items-center justify-between">
+                            <div class="text-sm text-gray-600">
+                                <i class="fas fa-clock mr-1"></i>
+                                6 min
+                            </div>
+                            <div class="w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center">
+                                <i class="fas fa-play text-blue-600 text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-0 right-0 w-20 h-20 opacity-60">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%2306B6D4' d='M50 20c16 0 30 14 30 30s-14 30-30 30-30-14-30-30 14-30 30-30z'/%3E%3Cpath fill='%23059669' d='M35 40c0-8 7-15 15-15s15 7 15 15-7 15-15 15-15-7-15-15z'/%3E%3Cpath fill='%23DC2626' d='M50 85l-8-8h16l-8 8z'/%3E%3C/svg%3E" alt="Tree" class="w-full h-full">
+                    </div>
+                </div>
+
+                <!-- Visualization -->
+                <div class="bg-soft-pink rounded-2xl p-6 relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Visualization</h3>
+                        <div class="flex items-center justify-between">
+                            <div class="text-sm text-gray-600">
+                                <i class="fas fa-clock mr-1"></i>
+                                13 min
+                            </div>
+                            <div class="w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center">
+                                <i class="fas fa-play text-pink-600 text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-0 right-0 w-16 h-16 opacity-60">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='40' r='15' fill='%23D4A574'/%3E%3Cpath fill='%23A855F7' d='M50 50c10 0 18 8 18 18v15c0 5-4 9-9 9H41c-5 0-9-4-9-9V68c0-10 8-18 18-18z'/%3E%3C/svg%3E" alt="Person" class="w-full h-full">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Loving Kindness -->
+                <div class="bg-soft-yellow rounded-2xl p-6 relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Loving Kindness</h3>
+                        <div class="flex items-center justify-between">
+                            <div class="text-sm text-gray-600">
+                                <i class="fas fa-clock mr-1"></i>
+                                15 min
+                            </div>
+                            <div class="w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center">
+                                <i class="fas fa-play text-yellow-600 text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-0 right-0 w-16 h-16 opacity-60">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23EC4899' d='M50 80l-15-25c-5-8 0-18 10-18s15 10 10 18l-5 10 5 10c5 8 0 18-10 18s-15-10-10-18l15-25z'/%3E%3C/svg%3E" alt="Heart" class="w-full h-full">
+                    </div>
+                </div>
+
+                <!-- Focused Attention -->
+                <div class="bg-soft-purple rounded-2xl p-6 relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Focused Attention</h3>
+                        <div class="flex items-center justify-between">
+                            <div class="text-sm text-gray-600">
+                                <i class="fas fa-clock mr-1"></i>
+                                10 min
+                            </div>
+                            <div class="w-8 h-8 bg-white bg-opacity-80 rounded-full flex items-center justify-center">
+                                <i class="fas fa-play text-purple-600 text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-0 right-0 w-16 h-16 opacity-60">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23059669' d='M20 70c0-15 10-25 20-25h20c10 0 20 10 20 25v20H20V70z'/%3E%3Cpath fill='%2306B6D4' d='M30 60c0-10 5-15 10-15h20c5 0 10 5 10 15v5H30v-5z'/%3E%3C/svg%3E" alt="Plant" class="w-full h-full">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="mt-8 bg-white rounded-2xl p-6 shadow-sm">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <button onclick="window.location.href='mood-tracker.html'" class="flex flex-col items-center p-4 bg-gradient-to-b from-blue-50 to-blue-100 rounded-xl hover:shadow-md transition-shadow">
+                        <i class="fas fa-heart text-blue-600 text-2xl mb-2"></i>
+                        <span class="text-sm font-medium text-gray-700">Track Mood</span>
+                    </button>
+                    <button onclick="window.location.href='self-assessment.html'" class="flex flex-col items-center p-4 bg-gradient-to-b from-green-50 to-green-100 rounded-xl hover:shadow-md transition-shadow">
+                        <i class="fas fa-clipboard-check text-green-600 text-2xl mb-2"></i>
+                        <span class="text-sm font-medium text-gray-700">Assessment</span>
+                    </button>
+                    <button onclick="window.location.href='book-counsellor.html'" class="flex flex-col items-center p-4 bg-gradient-to-b from-purple-50 to-purple-100 rounded-xl hover:shadow-md transition-shadow">
+                        <i class="fas fa-calendar text-purple-600 text-2xl mb-2"></i>
+                        <span class="text-sm font-medium text-gray-700">Book Session</span>
+                    </button>
+                    <button onclick="window.location.href='ai-chatbot.html'" class="flex flex-col items-center p-4 bg-gradient-to-b from-orange-50 to-orange-100 rounded-xl hover:shadow-md transition-shadow">
+                        <i class="fas fa-robot text-orange-600 text-2xl mb-2"></i>
+                        <span class="text-sm font-medium text-gray-700">AI Chat</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openSideDrawer() {
+            document.getElementById('sideDrawer').classList.add('open');
+            document.getElementById('overlay').classList.add('show');
+        }
+
+        function closeSideDrawer() {
+            document.getElementById('sideDrawer').classList.remove('open');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        // Close drawer when clicking overlay
+        document.getElementById('overlay').addEventListener('click', closeSideDrawer);
+
+        function switchCategory(category) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active', 'bg-gray-800', 'text-white', 'border-gray-800');
+                tab.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
+            });
+
+            // Add active class to clicked tab
+            event.target.classList.add('active', 'bg-gray-800', 'text-white', 'border-gray-800');
+            event.target.classList.remove('bg-white', 'text-gray-600', 'border-gray-200');
+
+            // TODO: Update content based on category
+            console.log('Switched to category:', category);
+        }
+
+        // Show success toast on page load (simulate session booking)
+        window.addEventListener('load', function() {
+            if (Math.random() > 0.7) { // 30% chance to show booking toast
+                showToast('📅 Session booked for Tue 14:00', 'success');
+            }
+        });
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all transform translate-x-full`;
+            
+            if (type === 'success') {
+                toast.classList.add('bg-green-500', 'text-white');
+            } else {
+                toast.classList.add('bg-blue-500', 'text-white');
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Auto dismiss
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html> 

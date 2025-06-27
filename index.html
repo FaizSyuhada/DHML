@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMHLH - Digital Mental Health Literacy Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'peach-50': '#FFEADF',
+                        'sky-50': '#EFF8FF',
+                        'soft-pink': '#F8E8F5',
+                        'soft-green': '#E8F5E8',
+                        'soft-yellow': '#FFF8DC',
+                        'soft-purple': '#F0E8FF'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .btn-ripple:active {
+            transform: scale(0.98);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #EFF8FF 0%, #FFEADF 50%, #F8E8F5 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-purple-400 to-pink-400 rounded-full p-2">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">DMHLH</span>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#about" class="text-gray-600 hover:text-purple-600 transition-colors">About</a>
+                    <a href="#features" class="text-gray-600 hover:text-purple-600 transition-colors">Features</a>
+                    <a href="#contact" class="text-gray-600 hover:text-purple-600 transition-colors">Contact</a>
+                </div>
+                <button onclick="window.location.href='login.html'" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full btn-ripple transition-all">
+                    Get Started
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-16">
+            <div class="flex justify-center mb-8">
+                <div class="relative">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath fill='%23E8F5E8' d='M100 20c44.2 0 80 35.8 80 80s-35.8 80-80 80-80-35.8-80-80 35.8-80 80-80z'/%3E%3Cpath fill='%23A855F7' d='M100 80c11 0 20 9 20 20s-9 20-20 20-20-9-20-20 9-20 20-20z'/%3E%3Cpath fill='%23F59E0B' d='M70 60c8.3 0 15 6.7 15 15s-6.7 15-15 15-15-6.7-15-15 6.7-15 15-15z'/%3E%3Cpath fill='%23EC4899' d='M130 60c8.3 0 15 6.7 15 15s-6.7 15-15 15-15-6.7-15-15 6.7-15 15-15z'/%3E%3C/svg%3E" 
+                         alt="Mental Health Illustration" class="w-64 h-64 rounded-full shadow-lg">
+                </div>
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl font-bold text-gray-800 mb-6">
+                Helping you feel<br>
+                <span class="text-purple-600">better, every day</span>
+            </h1>
+            
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+                Digital Mental Health Literacy Hub - Your comprehensive platform for mental wellness, 
+                self-assessment, and professional support.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="window.location.href='login.html'" class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-full text-lg font-semibold btn-ripple transition-all">
+                    Login with University ID
+                </button>
+                <button class="bg-white hover:bg-gray-50 text-purple-600 border border-purple-600 px-8 py-3 rounded-full text-lg font-semibold btn-ripple transition-all">
+                    Learn More
+                </button>
+            </div>
+        </div>
+
+        <!-- Features Grid -->
+        <div id="features" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <div class="bg-soft-green rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                    <i class="fas fa-moon text-green-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Sleep</h3>
+                <p class="text-gray-600 text-sm">Improve your sleep quality with guided meditation and relaxation techniques.</p>
+            </div>
+            
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <div class="bg-soft-purple rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                    <i class="fas fa-heart text-purple-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Inner Peace</h3>
+                <p class="text-gray-600 text-sm">Find your center with mindfulness exercises and breathing techniques.</p>
+            </div>
+            
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <div class="bg-soft-yellow rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                    <i class="fas fa-shield-alt text-yellow-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Stress</h3>
+                <p class="text-gray-600 text-sm">Learn effective stress management strategies for daily challenges.</p>
+            </div>
+            
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <div class="bg-soft-pink rounded-full w-12 h-12 flex items-center justify-center mb-4">
+                    <i class="fas fa-smile text-pink-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Anxiety</h3>
+                <p class="text-gray-600 text-sm">Manage anxiety with professional guidance and peer support.</p>
+            </div>
+        </div>
+
+        <!-- Key Features -->
+        <div class="bg-white rounded-3xl p-8 shadow-lg mb-16">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">What You Can Do</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="bg-peach-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-chart-line text-orange-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Track Your Mood</h3>
+                    <p class="text-gray-600">Daily mood tracking with insights and patterns.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-sky-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-user-md text-blue-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Book Counselling</h3>
+                    <p class="text-gray-600">Schedule sessions with qualified mental health professionals.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-soft-green rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-comments text-green-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Join Community</h3>
+                    <p class="text-gray-600">Connect with peers in a safe, anonymous environment.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-600 py-8 border-t border-gray-200">
+            <div class="flex justify-center items-center space-x-2 mb-4">
+                <div class="bg-gradient-to-r from-purple-400 to-pink-400 rounded-full p-1">
+                    <i class="fas fa-brain text-white text-sm"></i>
+                </div>
+                <span class="font-semibold">DMHLH</span>
+            </div>
+            <p class="mb-2">© 2025 MentalHealthAware Team | Privacy Policy</p>
+            <p class="text-sm">Helping you feel better, every day</p>
+        </footer>
+    </main>
+
+    <script>
+        // Add button ripple effect
+        document.querySelectorAll('.btn-ripple').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.height, rect.width);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+    </script>
+</body>
+</html> 

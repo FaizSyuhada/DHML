@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot - DMHLH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'peach-50': '#FFEADF',
+                        'sky-50': '#EFF8FF',
+                        'soft-pink': '#F8E8F5',
+                        'soft-green': '#E8F5E8',
+                        'soft-yellow': '#FFF8DC',
+                        'soft-purple': '#F0E8FF'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .message {
+            animation: fadeInUp 0.3s ease-out;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .typing-indicator {
+            animation: pulse 1.5s infinite;
+        }
+        .side-drawer {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .side-drawer.open {
+            transform: translateX(0);
+        }
+        .overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Mobile Menu Overlay -->
+    <div id="overlay" class="overlay fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+
+    <!-- Side Navigation Drawer -->
+    <nav id="sideDrawer" class="side-drawer fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-purple-400 to-pink-400 rounded-full p-2">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">DMHLH</span>
+                </div>
+                <button onclick="closeSideDrawer()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- User Profile -->
+            <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 mb-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold">ET</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800">En Thong</h3>
+                        <p class="text-sm text-gray-600">Student</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <div class="space-y-2">
+                <a href="student-dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="literacy-modules.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-book w-5"></i>
+                    <span>Literacy Modules</span>
+                </a>
+                <a href="self-assessment.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-clipboard-check w-5"></i>
+                    <span>Self Assessment</span>
+                </a>
+                <a href="mood-tracker.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-heart w-5"></i>
+                    <span>Mood Tracker</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 bg-purple-50 text-purple-700 rounded-lg">
+                    <i class="fas fa-robot w-5"></i>
+                    <span>AI Chatbot</span>
+                </a>
+                <a href="book-counsellor.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-calendar w-5"></i>
+                    <span>Book Counsellor</span>
+                </a>
+                <a href="forum.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-comments w-5"></i>
+                    <span>Forum</span>
+                </a>
+            </div>
+
+            <!-- Logout -->
+            <div class="absolute bottom-6 left-6 right-6">
+                <button onclick="window.location.href='login.html'" class="flex items-center space-x-3 w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Top Navigation -->
+    <div class="bg-white shadow-sm border-b">
+        <div class="px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <button onclick="openSideDrawer()" class="text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-robot text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-gray-800">AI Mental Health Assistant</h1>
+                        <p class="text-xs text-green-600">Online</p>
+                    </div>
+                </div>
+            </div>
+            <button class="text-gray-600 hover:text-gray-800">
+                <i class="fas fa-ellipsis-h text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="flex h-[calc(100vh-73px)]">
+        <!-- Chat Panel -->
+        <div class="flex-1 flex flex-col">
+            <!-- Welcome Message -->
+            <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-4 border-b">
+                <div class="max-w-3xl mx-auto">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-robot text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">DMHLH Assistant</h3>
+                            <p class="text-sm text-gray-600">I'm here to support your mental wellness journey</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Container -->
+            <div id="messagesContainer" class="flex-1 overflow-y-auto p-4">
+                <div class="max-w-3xl mx-auto space-y-4">
+                    <!-- AI Welcome Message -->
+                    <div class="message flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-robot text-white text-sm"></i>
+                        </div>
+                        <div class="bg-white rounded-2xl rounded-tl-md p-4 shadow-sm max-w-md">
+                            <p class="text-gray-800">Hello! I'm your AI mental health assistant. I'm here to provide support, coping strategies, and helpful resources. How are you feeling today?</p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="flex flex-wrap gap-2 ml-11">
+                        <button onclick="sendQuickMessage('I\'m feeling anxious')" class="bg-soft-pink text-pink-700 px-3 py-2 rounded-full text-sm hover:bg-pink-200 transition-colors">
+                            I'm feeling anxious
+                        </button>
+                        <button onclick="sendQuickMessage('I need help sleeping')" class="bg-soft-blue text-blue-700 px-3 py-2 rounded-full text-sm hover:bg-blue-200 transition-colors">
+                            I need help sleeping
+                        </button>
+                        <button onclick="sendQuickMessage('I\'m stressed about exams')" class="bg-soft-yellow text-yellow-700 px-3 py-2 rounded-full text-sm hover:bg-yellow-200 transition-colors">
+                            I'm stressed about exams
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="border-t bg-white p-4">
+                <div class="max-w-3xl mx-auto">
+                    <div class="flex space-x-3">
+                        <div class="flex-1 relative">
+                            <input 
+                                type="text" 
+                                id="messageInput"
+                                placeholder="Type your message..." 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none pr-12"
+                                onkeypress="handleKeyPress(event)"
+                            >
+                            <button onclick="sendMessage()" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-purple-600 transition-colors">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2 text-center">
+                        <i class="fas fa-shield-alt mr-1"></i>
+                        Your conversations are private and secure. This is not a replacement for professional help.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tips Panel -->
+        <div id="tipsPanel" class="w-80 bg-white border-l border-gray-200 hidden lg:block">
+            <div class="p-4 border-b">
+                <h3 class="font-semibold text-gray-800 flex items-center">
+                    <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                    Helpful Tips
+                </h3>
+            </div>
+            
+            <div id="tipsContent" class="p-4">
+                <div class="bg-soft-green rounded-xl p-4 mb-4">
+                    <h4 class="font-semibold text-gray-800 mb-2">💡 Getting Started</h4>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• Be open and honest about your feelings</li>
+                        <li>• Ask specific questions for better guidance</li>
+                        <li>• Click on my messages for related tips</li>
+                        <li>• Use the quick action buttons for common topics</li>
+                    </ul>
+                </div>
+
+                <div class="bg-soft-purple rounded-xl p-4 mb-4">
+                    <h4 class="font-semibold text-gray-800 mb-2">🌟 Popular Topics</h4>
+                    <div class="space-y-2">
+                        <button onclick="sendQuickMessage('breathing exercises')" class="w-full text-left p-2 hover:bg-purple-100 rounded-lg text-sm transition-colors">
+                            Breathing Exercises
+                        </button>
+                        <button onclick="sendQuickMessage('mindfulness techniques')" class="w-full text-left p-2 hover:bg-purple-100 rounded-lg text-sm transition-colors">
+                            Mindfulness Techniques
+                        </button>
+                        <button onclick="sendQuickMessage('sleep hygiene tips')" class="w-full text-left p-2 hover:bg-purple-100 rounded-lg text-sm transition-colors">
+                            Sleep Hygiene Tips
+                        </button>
+                        <button onclick="sendQuickMessage('study stress management')" class="w-full text-left p-2 hover:bg-purple-100 rounded-lg text-sm transition-colors">
+                            Study Stress Management
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-soft-yellow rounded-xl p-4">
+                    <h4 class="font-semibold text-gray-800 mb-2">⚠️ Crisis Resources</h4>
+                    <p class="text-sm text-gray-600 mb-2">If you're in crisis or having thoughts of self-harm:</p>
+                    <div class="space-y-1 text-sm">
+                        <p><strong>Emergency:</strong> Call 000</p>
+                        <p><strong>Lifeline:</strong> 13 11 14</p>
+                        <p><strong>Beyond Blue:</strong> 1300 22 4636</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openSideDrawer() {
+            document.getElementById('sideDrawer').classList.add('open');
+            document.getElementById('overlay').classList.add('show');
+        }
+
+        function closeSideDrawer() {
+            document.getElementById('sideDrawer').classList.remove('open');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        // Close drawer when clicking overlay
+        document.getElementById('overlay').addEventListener('click', closeSideDrawer);
+
+        let messageCount = 0;
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addUserMessage(message);
+            input.value = '';
+            
+            // Simulate AI response
+            setTimeout(() => {
+                addAIResponse(message);
+            }, 1000);
+        }
+
+        function sendQuickMessage(message) {
+            addUserMessage(message);
+            setTimeout(() => {
+                addAIResponse(message);
+            }, 1000);
+        }
+
+        function addUserMessage(message) {
+            const container = document.getElementById('messagesContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message flex items-start space-x-3 justify-end';
+            
+            messageDiv.innerHTML = `
+                <div class="bg-purple-600 text-white rounded-2xl rounded-tr-md p-4 shadow-sm max-w-md">
+                    <p>${message}</p>
+                </div>
+                <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="text-white text-sm font-semibold">ET</span>
+                </div>
+            `;
+            
+            container.querySelector('.max-w-3xl').appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function addAIResponse(userMessage) {
+            const container = document.getElementById('messagesContainer');
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            setTimeout(() => {
+                hideTypingIndicator();
+                
+                const response = generateAIResponse(userMessage);
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message flex items-start space-x-3';
+                
+                messageDiv.innerHTML = `
+                    <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-white text-sm"></i>
+                    </div>
+                    <div onclick="showTipsForMessage('${userMessage}')" class="bg-white rounded-2xl rounded-tl-md p-4 shadow-sm max-w-md cursor-pointer hover:shadow-md transition-shadow">
+                        <p class="text-gray-800">${response}</p>
+                    </div>
+                `;
+                
+                container.querySelector('.max-w-3xl').appendChild(messageDiv);
+                scrollToBottom();
+                
+                // Add follow-up suggestions
+                setTimeout(() => {
+                    addFollowUpSuggestions(userMessage);
+                }, 500);
+            }, 1500);
+        }
+
+        function generateAIResponse(userMessage) {
+            const responses = {
+                'anxious': "I understand you're feeling anxious. That's completely normal and you're not alone. Here are some immediate techniques that can help: try the 4-7-8 breathing technique, ground yourself using the 5-4-3-2-1 method, or practice progressive muscle relaxation.",
+                'sleep': "Sleep difficulties can really impact our mental health. Good sleep hygiene is essential. Try establishing a consistent bedtime routine, avoiding screens 1 hour before bed, and creating a calm sleep environment. Would you like specific relaxation techniques for bedtime?",
+                'stress': "Stress about exams is very common among students. It's important to break down your study into manageable chunks, take regular breaks, and remember that perfection isn't the goal - progress is. Have you tried any stress management techniques before?",
+                'breathing': "Breathing exercises are fantastic for immediate anxiety relief! Try the 4-7-8 technique: breathe in for 4 counts, hold for 7, exhale for 8. Or try box breathing: in for 4, hold for 4, out for 4, hold for 4. Practice daily for best results.",
+                'mindfulness': "Mindfulness can help you stay present and reduce anxiety. Start with just 5 minutes a day - focus on your breath, notice sounds around you, or try a body scan. Apps like headspace or calm can guide you through exercises.",
+                'default': "Thank you for sharing that with me. It's brave to reach out for support. I'm here to help you work through whatever you're experiencing. Can you tell me more about what's on your mind today?"
+            };
+
+            // Simple keyword matching
+            const lowerMessage = userMessage.toLowerCase();
+            
+            if (lowerMessage.includes('anxious') || lowerMessage.includes('anxiety') || lowerMessage.includes('worried')) {
+                return responses.anxious;
+            } else if (lowerMessage.includes('sleep') || lowerMessage.includes('tired') || lowerMessage.includes('insomnia')) {
+                return responses.sleep;
+            } else if (lowerMessage.includes('stress') || lowerMessage.includes('exam') || lowerMessage.includes('study')) {
+                return responses.stress;
+            } else if (lowerMessage.includes('breathing')) {
+                return responses.breathing;
+            } else if (lowerMessage.includes('mindfulness') || lowerMessage.includes('meditation')) {
+                return responses.mindfulness;
+            } else {
+                return responses.default;
+            }
+        }
+
+        function addFollowUpSuggestions(userMessage) {
+            const container = document.getElementById('messagesContainer');
+            const suggestions = getFollowUpSuggestions(userMessage);
+            
+            if (suggestions.length === 0) return;
+            
+            const suggestionsDiv = document.createElement('div');
+            suggestionsDiv.className = 'flex flex-wrap gap-2 ml-11';
+            
+            suggestions.forEach(suggestion => {
+                const button = document.createElement('button');
+                button.className = 'bg-gray-100 text-gray-700 px-3 py-2 rounded-full text-sm hover:bg-gray-200 transition-colors';
+                button.textContent = suggestion;
+                button.onclick = () => sendQuickMessage(suggestion);
+                suggestionsDiv.appendChild(button);
+            });
+            
+            container.querySelector('.max-w-3xl').appendChild(suggestionsDiv);
+            scrollToBottom();
+        }
+
+        function getFollowUpSuggestions(userMessage) {
+            const lowerMessage = userMessage.toLowerCase();
+            
+            if (lowerMessage.includes('anxious') || lowerMessage.includes('anxiety')) {
+                return ['Tell me about grounding techniques', 'How can I practice mindfulness?', 'What about breathing exercises?'];
+            } else if (lowerMessage.includes('sleep')) {
+                return ['Sleep hygiene tips', 'Bedtime routine ideas', 'Relaxation techniques'];
+            } else if (lowerMessage.includes('stress') || lowerMessage.includes('exam')) {
+                return ['Study break activities', 'Time management tips', 'Relaxation techniques'];
+            } else {
+                return ['Tell me more', 'What coping strategies help?', 'How can I support myself?'];
+            }
+        }
+
+        function showTypingIndicator() {
+            const container = document.getElementById('messagesContainer');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typingIndicator';
+            typingDiv.className = 'flex items-start space-x-3';
+            
+            typingDiv.innerHTML = `
+                <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-robot text-white text-sm"></i>
+                </div>
+                <div class="bg-white rounded-2xl rounded-tl-md p-4 shadow-sm">
+                    <div class="typing-indicator flex space-x-1">
+                        <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                    </div>
+                </div>
+            `;
+            
+            container.querySelector('.max-w-3xl').appendChild(typingDiv);
+            scrollToBottom();
+        }
+
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        function showTipsForMessage(userMessage) {
+            const tipsContent = document.getElementById('tipsContent');
+            const lowerMessage = userMessage.toLowerCase();
+            
+            let tipContent = '';
+            
+            if (lowerMessage.includes('anxious') || lowerMessage.includes('anxiety')) {
+                tipContent = `
+                    <div class="bg-soft-pink rounded-xl p-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">🌸 Anxiety Management</h4>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Practice 4-7-8 breathing daily</li>
+                            <li>• Try the 5-4-3-2-1 grounding technique</li>
+                            <li>• Challenge negative thoughts</li>
+                            <li>• Regular exercise helps reduce anxiety</li>
+                            <li>• Limit caffeine intake</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (lowerMessage.includes('sleep')) {
+                tipContent = `
+                    <div class="bg-soft-blue rounded-xl p-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">😴 Better Sleep</h4>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Keep consistent sleep/wake times</li>
+                            <li>• Create a relaxing bedtime routine</li>
+                            <li>• Avoid screens 1 hour before bed</li>
+                            <li>• Keep bedroom cool and dark</li>
+                            <li>• Try progressive muscle relaxation</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                tipContent = `
+                    <div class="bg-soft-green rounded-xl p-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">💡 General Wellness</h4>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Practice self-compassion</li>
+                            <li>• Maintain social connections</li>
+                            <li>• Regular physical activity</li>
+                            <li>• Balanced nutrition</li>
+                            <li>• Seek professional help when needed</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // Add to tips panel
+            const existingTips = tipsContent.querySelectorAll('.bg-soft-pink, .bg-soft-blue, .bg-soft-green');
+            if (existingTips.length > 0) {
+                existingTips[existingTips.length - 1].outerHTML = tipContent;
+            } else {
+                tipsContent.innerHTML += tipContent;
+            }
+        }
+
+        function scrollToBottom() {
+            const container = document.getElementById('messagesContainer');
+            container.scrollTop = container.scrollHeight;
+        }
+    </script>
+</body>
+</html> 
