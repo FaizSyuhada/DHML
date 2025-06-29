@@ -23,37 +23,40 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .side-drawer {
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-        }
-        .side-drawer.open {
-            transform: translateX(0);
-        }
-        .overlay {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        .overlay.show {
-            opacity: 1;
-            visibility: visible;
+        @media (max-width: 1023px) {
+            .mobile-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .mobile-sidebar.open {
+                transform: translateX(0);
+            }
+            .overlay {
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease, visibility 0.3s ease;
+            }
+            .overlay.show {
+                opacity: 1;
+                visibility: visible;
+            }
         }
     </style>
 </head>
-<body class="min-h-screen bg-gray-50">
+<body class="min-h-screen bg-gray-50 flex">
     <!-- Mobile Menu Overlay -->
     <div id="overlay" class="overlay fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
 
-    <!-- Side Navigation Drawer -->
-    <nav id="sideDrawer" class="side-drawer fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50 lg:transform-none lg:static lg:w-64">
-        <div class="p-6">
-            <div class="flex items-center justify-between mb-8">
+    <!-- Sidebar Navigation -->
+    <nav id="sideDrawer" class="mobile-sidebar fixed left-0 top-0 h-full w-80 bg-white z-50 lg:static lg:w-64 lg:border-r lg:border-gray-200 lg:flex-shrink-0">
+        <div class="p-4 lg:p-6 h-full flex flex-col">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-8 lg:justify-center">
                 <div class="flex items-center space-x-3">
-                    <div class="bg-gradient-to-r from-red-500 to-pink-600 rounded-full p-2">
-                        <i class="fas fa-brain text-white text-xl"></i>
+                    <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-brain text-white text-sm"></i>
                     </div>
-                    <span class="text-xl font-bold text-gray-800">DMHLH</span>
+                    <span class="text-lg font-bold text-gray-800">DMHLH</span>
                 </div>
                 <button onclick="closeSideDrawer()" class="text-gray-500 hover:text-gray-700 lg:hidden">
                     <i class="fas fa-times text-xl"></i>
@@ -61,65 +64,65 @@
             </div>
 
             <!-- User Profile -->
-            <div class="bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl p-4 mb-6">
+            <div class="bg-gray-50 rounded-xl p-4 mb-6">
                 <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center">
-                        <span class="text-white font-semibold">AD</span>
+                    <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold text-sm">AD</span>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-gray-800">Admin User</h3>
-                        <p class="text-sm text-gray-600">System Administrator</p>
+                        <h3 class="font-medium text-gray-800">Admin User</h3>
+                        <p class="text-xs text-gray-600">System Administrator</p>
                     </div>
                 </div>
             </div>
 
             <!-- Navigation Menu -->
-            <div class="space-y-2">
-                <a href="admin-dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                    <i class="fas fa-home w-5 text-red-500"></i>
-                    <span>Dashboard</span>
+            <div class="space-y-1 flex-1">
+                <a href="admin-dashboard.html" class="flex items-center space-x-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-home w-4 h-4 text-red-500"></i>
+                    <span class="text-sm font-medium">Dashboard</span>
                 </a>
-                <a href="admin-users.html" class="flex items-center space-x-3 px-4 py-3 bg-red-50 text-red-700 rounded-lg">
-                    <i class="fas fa-users w-5 text-blue-500"></i>
-                    <span>User Management</span>
+                <a href="admin-users.html" class="flex items-center space-x-3 px-3 py-2.5 bg-red-500 text-white rounded-lg">
+                    <i class="fas fa-users w-4 h-4"></i>
+                    <span class="text-sm font-medium">User Management</span>
                 </a>
-                <a href="admin-content.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                    <i class="fas fa-folder w-5 text-green-500"></i>
-                    <span>Content Management</span>
+                <a href="admin-content.html" class="flex items-center space-x-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-folder w-4 h-4 text-green-500"></i>
+                    <span class="text-sm font-medium">Content Management</span>
                 </a>
-                <a href="admin-system-health.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                    <i class="fas fa-server w-5 text-gray-500"></i>
-                    <span>System Health</span>
+                <a href="admin-system-health.html" class="flex items-center space-x-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-server w-4 h-4 text-gray-500"></i>
+                    <span class="text-sm font-medium">System Health</span>
                 </a>
-                <a href="admin-analytics.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                    <i class="fas fa-chart-bar w-5 text-purple-500"></i>
-                    <span>Analytics</span>
+                <a href="admin-analytics.html" class="flex items-center space-x-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-chart-bar w-4 h-4 text-purple-500"></i>
+                    <span class="text-sm font-medium">Analytics</span>
                 </a>
-                <a href="admin-data-export.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                    <i class="fas fa-download w-5 text-orange-500"></i>
-                    <span>Data Export</span>
+                <a href="admin-data-export.html" class="flex items-center space-x-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-download w-4 h-4 text-orange-500"></i>
+                    <span class="text-sm font-medium">Data Export</span>
                 </a>
-                <a href="admin-settings.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                    <i class="fas fa-cog w-5 text-gray-500"></i>
-                    <span>Settings</span>
+                <a href="admin-settings.html" class="flex items-center space-x-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-cog w-4 h-4 text-gray-500"></i>
+                    <span class="text-sm font-medium">Settings</span>
                 </a>
             </div>
 
             <!-- Logout -->
-            <div class="absolute bottom-6 left-6 right-6">
-                <button onclick="window.location.href='login.html'" class="flex items-center space-x-3 w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg">
-                    <i class="fas fa-sign-out-alt w-5"></i>
-                    <span>Logout</span>
+            <div class="mt-auto">
+                <button onclick="window.location.href='login.html'" class="flex items-center space-x-3 w-full px-3 py-2.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                    <i class="fas fa-sign-out-alt w-4 h-4"></i>
+                    <span class="text-sm font-medium">Logout</span>
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="lg:ml-64 min-h-screen">
-        <!-- Top Navigation -->
-        <div class="bg-white shadow-sm border-b sticky top-0 z-30">
-            <div class="px-4 py-4 flex items-center justify-between">
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col min-h-screen">
+        <!-- Top Navigation Header -->
+        <header class="bg-white shadow-sm border-b">
+            <div class="px-4 lg:px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center space-x-4">
                     <button onclick="openSideDrawer()" class="text-gray-600 hover:text-gray-800 lg:hidden">
                         <i class="fas fa-bars text-xl"></i>
@@ -135,12 +138,12 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </header>
 
-        <!-- Content -->
-        <div class="p-4 max-w-7xl mx-auto">
+        <!-- Main Content -->
+        <main class="flex-1 p-4 lg:p-6 overflow-auto">
             <!-- Stats Overview -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
                 <div class="bg-white rounded-xl p-4 shadow-sm">
                     <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
@@ -190,7 +193,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 <!-- Add User Form -->
                 <div class="lg:col-span-1">
                     <div class="bg-white rounded-2xl p-6 shadow-sm">
@@ -378,7 +381,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <script>

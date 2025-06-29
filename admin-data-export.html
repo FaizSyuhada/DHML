@@ -6,77 +6,107 @@
     <title>Data Export - DHML Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @media (max-width: 1023px) {
+            .mobile-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .mobile-sidebar.open {
+                transform: translateX(0);
+            }
+            .overlay {
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease, visibility 0.3s ease;
+            }
+            .overlay.show {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body class="min-h-screen bg-gray-50 flex">
     <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
-    
-    <!-- Sidebar -->
-    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0">
-        <div class="flex items-center justify-center h-16 bg-indigo-600">
-            <h1 class="text-white text-xl font-bold">DHML Admin</h1>
-        </div>
-        
-        <nav class="mt-8">
-            <ul class="space-y-2 px-4">
-                <li>
-                    <a href="admin-dashboard.html" class="flex items-center space-x-3 text-gray-700 p-3 rounded-lg hover:bg-gray-100 transition-colors">
-                        <i class="fas fa-home text-red-500"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="admin-users.html" class="flex items-center space-x-3 text-gray-700 p-3 rounded-lg hover:bg-gray-100 transition-colors">
-                        <i class="fas fa-users text-blue-500"></i>
-                        <span>User Management</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="admin-content.html" class="flex items-center space-x-3 text-gray-700 p-3 rounded-lg hover:bg-gray-100 transition-colors">
-                        <i class="fas fa-folder text-green-500"></i>
-                        <span>Content Management</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="admin-system-health.html" class="flex items-center space-x-3 text-gray-700 p-3 rounded-lg hover:bg-gray-100 transition-colors">
-                        <i class="fas fa-server text-gray-500"></i>
-                        <span>System Health</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="admin-analytics.html" class="flex items-center space-x-3 text-gray-700 p-3 rounded-lg hover:bg-gray-100 transition-colors">
-                        <i class="fas fa-chart-bar text-purple-500"></i>
-                        <span>Analytics</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="admin-data-export.html" class="flex items-center space-x-3 text-white bg-indigo-600 p-3 rounded-lg">
-                        <i class="fas fa-download text-white"></i>
-                        <span>Data Export</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="admin-settings.html" class="flex items-center space-x-3 text-gray-700 p-3 rounded-lg hover:bg-gray-100 transition-colors">
-                        <i class="fas fa-cog text-gray-500"></i>
-                        <span>Settings</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        
-        <div class="absolute bottom-4 left-4 right-4">
-            <a href="login.html" class="flex items-center space-x-3 text-gray-700 p-3 rounded-lg hover:bg-gray-100 transition-colors">
-                <i class="fas fa-sign-out-alt text-red-500"></i>
-                <span>Logout</span>
-            </a>
-        </div>
-    </div>
+    <div id="overlay" class="overlay fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
 
-    <!-- Main Content -->
-    <div class="lg:ml-64">
+    <!-- Sidebar Navigation -->
+    <nav id="sideDrawer" class="mobile-sidebar fixed left-0 top-0 h-full w-80 bg-white z-50 lg:static lg:w-64 lg:border-r lg:border-gray-200 lg:flex-shrink-0">
+        <div class="p-4 lg:p-6 h-full flex flex-col">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-8 lg:justify-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-brain text-white text-sm"></i>
+                    </div>
+                    <span class="text-lg font-bold text-gray-800">DMHLH</span>
+                </div>
+                <button onclick="closeSideDrawer()" class="text-gray-500 hover:text-gray-700 lg:hidden">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- User Profile -->
+            <div class="bg-gray-50 rounded-xl p-4 mb-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold text-sm">AD</span>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-gray-800">Admin User</h3>
+                        <p class="text-xs text-gray-600">System Administrator</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <div class="space-y-1 flex-1">
+                <a href="admin-dashboard.html" class="flex items-center space-x-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-home w-4 h-4 text-red-500"></i>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a href="admin-users.html" class="flex items-center space-x-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-users w-4 h-4 text-blue-500"></i>
+                    <span class="text-sm font-medium">User Management</span>
+                </a>
+                <a href="admin-content.html" class="flex items-center space-x-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-folder w-4 h-4 text-green-500"></i>
+                    <span class="text-sm font-medium">Content Management</span>
+                </a>
+                <a href="admin-system-health.html" class="flex items-center space-x-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-server w-4 h-4 text-gray-500"></i>
+                    <span class="text-sm font-medium">System Health</span>
+                </a>
+                <a href="admin-analytics.html" class="flex items-center space-x-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-chart-bar w-4 h-4 text-purple-500"></i>
+                    <span class="text-sm font-medium">Analytics</span>
+                </a>
+                <a href="admin-data-export.html" class="flex items-center space-x-3 px-3 py-2.5 bg-red-500 text-white rounded-lg">
+                    <i class="fas fa-download w-4 h-4"></i>
+                    <span class="text-sm font-medium">Data Export</span>
+                </a>
+                <a href="admin-settings.html" class="flex items-center space-x-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-cog w-4 h-4 text-gray-500"></i>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </div>
+
+            <!-- Logout -->
+            <div class="mt-auto">
+                <button onclick="window.location.href='login.html'" class="flex items-center space-x-3 w-full px-3 py-2.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                    <i class="fas fa-sign-out-alt w-4 h-4"></i>
+                    <span class="text-sm font-medium">Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col min-h-screen">
         <!-- Top Header -->
         <header class="bg-white shadow-sm border-b border-gray-200">
-            <div class="flex items-center justify-between px-6 py-4">
+            <div class="flex items-center justify-between px-4 lg:px-6 py-4">
                 <div class="flex items-center">
                     <button id="mobile-menu-btn" class="lg:hidden mr-4 text-gray-600 hover:text-gray-900">
                         <i class="fas fa-bars text-xl"></i>
@@ -96,7 +126,7 @@
         </header>
 
         <!-- Data Export Content -->
-        <main class="p-6">
+        <main class="flex-1 p-4 lg:p-6 overflow-auto">
             <!-- Quick Export Actions -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <button class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow text-left">
@@ -516,20 +546,24 @@
     </div>
 
     <script>
+        function openSideDrawer() {
+            document.getElementById('sideDrawer').classList.add('open');
+            document.getElementById('overlay').classList.add('show');
+        }
+
+        function closeSideDrawer() {
+            document.getElementById('sideDrawer').classList.remove('open');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        // Close drawer when clicking overlay
+        document.getElementById('overlay').addEventListener('click', closeSideDrawer);
+
         // Mobile menu toggle
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('mobile-menu-overlay');
-
-        mobileMenuBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
-        });
-
-        overlay.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
-        });
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', openSideDrawer);
+        }
 
         // Quick export buttons
         document.querySelectorAll('.bg-white.rounded-lg.shadow.p-6.hover\\:shadow-lg').forEach(button => {
@@ -540,9 +574,12 @@
         });
 
         // Export data button
-        document.querySelector('.bg-indigo-600').addEventListener('click', () => {
-            alert('Custom export started! You will be notified when it\'s ready.');
-        });
+        const exportBtn = document.querySelector('.bg-indigo-600');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', () => {
+                alert('Custom export started! You will be notified when it\'s ready.');
+            });
+        }
     </script>
 </body>
 </html>
