@@ -89,27 +89,27 @@
                     <i class="fas fa-home w-5"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="#users" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                <a href="admin-users.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
                     <i class="fas fa-users w-5"></i>
                     <span>User Management</span>
                 </a>
-                <a href="#content" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                <a href="admin-content.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
                     <i class="fas fa-folder w-5"></i>
                     <span>Content Management</span>
                 </a>
-                <a href="#system" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                <a href="admin-dashboard.html#system" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
                     <i class="fas fa-server w-5"></i>
                     <span>System Health</span>
                 </a>
-                <a href="#analytics" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                <a href="admin-analytics.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
                     <i class="fas fa-chart-bar w-5"></i>
                     <span>Analytics</span>
                 </a>
-                <a href="#exports" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                <a href="admin-dashboard.html#exports" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
                     <i class="fas fa-download w-5"></i>
                     <span>Data Export</span>
                 </a>
-                <a href="#settings" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                <a href="admin-settings.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
                     <i class="fas fa-cog w-5"></i>
                     <span>Settings</span>
                 </a>
@@ -524,6 +524,10 @@
         </div>
     </div>
 
+
+
+
+
     <script>
         function openSideDrawer() {
             document.getElementById('sideDrawer').classList.add('open');
@@ -538,12 +542,189 @@
         // Close drawer when clicking overlay
         document.getElementById('overlay').addEventListener('click', closeSideDrawer);
 
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Navigation functions
         function showUserManagement() {
-            alert('User Management Panel\n\nThis would provide:\n• Add/Edit/Deactivate users\n• Role management (Student/Faculty/Counsellor/Admin)\n• Bulk user import\n• User activity monitoring\n• Permission settings');
+            window.location.href = 'admin-users.html';
         }
 
         function showContentManagement() {
-            alert('Content Management System\n\nThis would provide:\n• CRUD operations for literacy modules\n• Quiz and assessment builder\n• Mood icon customization\n• Content versioning\n• Publishing workflow');
+            window.location.href = 'admin-content.html';
+        }
+
+        function showAnalytics() {
+            window.location.href = 'admin-analytics.html';
+        }
+
+        function showSettings() {
+            window.location.href = 'admin-settings.html';
+        }
+
+        // Content Management functions
+        function showContentType(type) {
+            // Remove active state from all buttons
+            document.querySelectorAll('.content-type-btn').forEach(btn => {
+                btn.className = btn.className.replace('border-blue-200 bg-blue-50', 'border-gray-200');
+            });
+            
+            // Add active state to clicked button
+            event.target.closest('.content-type-btn').className = 
+                event.target.closest('.content-type-btn').className.replace('border-gray-200', 'border-blue-200 bg-blue-50');
+
+            const contentDisplay = document.getElementById('contentDisplay');
+            
+            switch(type) {
+                case 'modules':
+                    contentDisplay.innerHTML = `
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="font-semibold text-gray-800">Literacy Modules</h4>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                                <i class="fas fa-plus mr-2"></i>New Module
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="bg-white rounded-lg p-4 border">
+                                <h5 class="font-medium text-gray-800 mb-2">Anxiety Management</h5>
+                                <p class="text-sm text-gray-600 mb-3">Learn techniques to manage anxiety and stress</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">Published</span>
+                                    <button class="text-blue-600 hover:text-blue-700"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border">
+                                <h5 class="font-medium text-gray-800 mb-2">Depression Awareness</h5>
+                                <p class="text-sm text-gray-600 mb-3">Understanding and recognizing depression symptoms</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">Published</span>
+                                    <button class="text-blue-600 hover:text-blue-700"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border">
+                                <h5 class="font-medium text-gray-800 mb-2">Mindfulness Basics</h5>
+                                <p class="text-sm text-gray-600 mb-3">Introduction to mindfulness and meditation</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-yellow-600 bg-yellow-100 px-2 py-1 rounded">Draft</span>
+                                    <button class="text-blue-600 hover:text-blue-700"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'assessments':
+                    contentDisplay.innerHTML = `
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="font-semibold text-gray-800">Self-Assessments</h4>
+                            <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                                <i class="fas fa-plus mr-2"></i>New Assessment
+                            </button>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="bg-white rounded-lg p-4 border flex justify-between items-center">
+                                <div>
+                                    <h5 class="font-medium text-gray-800">GAD-7 Anxiety Scale</h5>
+                                    <p class="text-sm text-gray-600">7 questions • Average completion: 3 min</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">Active</span>
+                                    <button class="text-blue-600 hover:text-blue-700"><i class="fas fa-chart-bar"></i></button>
+                                    <button class="text-green-600 hover:text-green-700"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border flex justify-between items-center">
+                                <div>
+                                    <h5 class="font-medium text-gray-800">PHQ-9 Depression Screen</h5>
+                                    <p class="text-sm text-gray-600">9 questions • Average completion: 4 min</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">Active</span>
+                                    <button class="text-blue-600 hover:text-blue-700"><i class="fas fa-chart-bar"></i></button>
+                                    <button class="text-green-600 hover:text-green-700"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'moods':
+                    contentDisplay.innerHTML = `
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="font-semibold text-gray-800">Mood Icons</h4>
+                            <button class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                                <i class="fas fa-plus mr-2"></i>Add Icon
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+                            <div class="text-center p-3 bg-white rounded-lg border hover:border-purple-300">
+                                <div class="text-3xl mb-2">😊</div>
+                                <div class="text-xs text-gray-600">Happy</div>
+                            </div>
+                            <div class="text-center p-3 bg-white rounded-lg border hover:border-purple-300">
+                                <div class="text-3xl mb-2">😢</div>
+                                <div class="text-xs text-gray-600">Sad</div>
+                            </div>
+                            <div class="text-center p-3 bg-white rounded-lg border hover:border-purple-300">
+                                <div class="text-3xl mb-2">😰</div>
+                                <div class="text-xs text-gray-600">Anxious</div>
+                            </div>
+                            <div class="text-center p-3 bg-white rounded-lg border hover:border-purple-300">
+                                <div class="text-3xl mb-2">😡</div>
+                                <div class="text-xs text-gray-600">Angry</div>
+                            </div>
+                            <div class="text-center p-3 bg-white rounded-lg border hover:border-purple-300">
+                                <div class="text-3xl mb-2">😴</div>
+                                <div class="text-xs text-gray-600">Tired</div>
+                            </div>
+                            <div class="text-center p-3 bg-white rounded-lg border hover:border-purple-300">
+                                <div class="text-3xl mb-2">😌</div>
+                                <div class="text-xs text-gray-600">Calm</div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'forums':
+                    contentDisplay.innerHTML = `
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="font-semibold text-gray-800">Forum Topics</h4>
+                            <button class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                                <i class="fas fa-plus mr-2"></i>New Topic
+                            </button>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="bg-white rounded-lg p-4 border">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h5 class="font-medium text-gray-800">Coping with Exam Stress</h5>
+                                    <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">Active</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">Discussion about managing stress during examination periods</p>
+                                <div class="flex justify-between text-xs text-gray-500">
+                                    <span>23 replies • Last active 2 hours ago</span>
+                                    <button class="text-orange-600 hover:text-orange-700"><i class="fas fa-cog"></i></button>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h5 class="font-medium text-gray-800">Building Social Connections</h5>
+                                    <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">Active</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">Tips and experiences on making friends and building relationships</p>
+                                <div class="flex justify-between text-xs text-gray-500">
+                                    <span>15 replies • Last active 1 day ago</span>
+                                    <button class="text-orange-600 hover:text-orange-700"><i class="fas fa-cog"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
         }
 
         function editContent(contentType) {
@@ -551,10 +732,108 @@
         }
 
         function exportData(dataType) {
-            // Simulate CSV download
+            // Simulate CSV download with more realistic implementation
             const filename = `dmhlh_${dataType}_export_${new Date().toISOString().split('T')[0]}.csv`;
-            alert(`Preparing ${dataType} export...\n\nFile: ${filename}\n\nThis would:\n• Generate CSV with relevant data\n• Include anonymized identifiers\n• Apply data privacy filters\n• Trigger download\n\nNote: All exports comply with privacy regulations.`);
+            
+            // Show loading state
+            const button = event.target.closest('div');
+            const originalContent = button.innerHTML;
+            button.innerHTML = `
+                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-spinner animate-spin text-gray-600 text-xl"></i>
+                </div>
+                <h4 class="font-semibold text-gray-800 mb-2">Preparing Export...</h4>
+                <p class="text-sm text-gray-600 mb-4">Please wait while we generate your file</p>
+            `;
+            
+            // Simulate export process
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                
+                // Create and trigger download of dummy CSV
+                const csvContent = generateDummyCSV(dataType);
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                // Show success message
+                alert(`✅ Export completed!\n\nFile: ${filename}\n\nThe CSV file has been downloaded to your device.\n\nNote: This is a demo export with sample data.`);
+            }, 2000);
         }
+
+        function generateDummyCSV(dataType) {
+            const date = new Date().toISOString().split('T')[0];
+            
+            switch(dataType) {
+                case 'users':
+                    return `User ID,Name,Email,Role,Registration Date,Last Login,Status
+ST2024-001,John Smith,john.smith@university.edu,Student,2024-01-15,2024-01-20,Active
+ST2024-002,Jane Doe,jane.doe@university.edu,Student,2024-01-16,2024-01-19,Active
+FC-001,Dr. Maria Johnson,maria.johnson@university.edu,Faculty,2024-01-10,2024-01-20,Active
+CN-001,Alex Lee,alex.lee@university.edu,Counsellor,2024-01-12,2024-01-20,Active`;
+                
+                case 'assessments':
+                    return `Assessment ID,User ID,Assessment Type,Score,Completion Date,Risk Level
+ASS-001,ST2024-001,GAD-7,8,2024-01-18,Moderate
+ASS-002,ST2024-001,PHQ-9,12,2024-01-18,Moderate
+ASS-003,ST2024-002,GAD-7,15,2024-01-19,Severe
+ASS-004,ST2024-002,PHQ-9,6,2024-01-19,Mild`;
+                
+                case 'bookings':
+                    return `Booking ID,Student ID,Counsellor ID,Date,Time,Status,Type
+BK-001,ST2024-001,CN-001,2024-01-22,14:00,Confirmed,Individual
+BK-002,ST2024-002,CN-001,2024-01-23,15:00,Completed,Individual
+BK-003,ST2024-003,CN-002,2024-01-24,10:00,Pending,Group
+BK-004,ST2024-001,CN-001,2024-01-25,14:00,Scheduled,Follow-up`;
+                
+                case 'usage':
+                    return `Date,Total Users,Active Users,Module Views,Assessment Completions,Session Duration (avg)
+2024-01-15,1247,892,1543,234,25.3
+2024-01-16,1251,901,1612,256,27.1
+2024-01-17,1253,887,1489,198,23.8
+2024-01-18,1255,923,1687,267,28.9
+2024-01-19,1258,945,1721,289,31.2`;
+                
+                default:
+                    return `Data Export,${date}\nSample data for ${dataType}`;
+            }
+        }
+
+        // Add navigation click handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handlers to navigation links
+            document.querySelector('a[href="#users"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                showUserManagement();
+            });
+            
+            document.querySelector('a[href="#content"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                showContentManagement();
+            });
+            
+            document.querySelector('a[href="#analytics"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                showAnalytics();
+            });
+            
+            document.querySelector('a[href="#settings"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                showSettings();
+            });
+
+            // Add form submission handler
+            document.getElementById('addUserForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('✅ User added successfully!\n\nThe new user has been created and will receive login credentials via email.');
+            });
+        });
     </script>
 </body>
 </html> 

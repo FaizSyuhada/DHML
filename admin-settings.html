@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - DMHLH Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .side-drawer { transform: translateX(-100%); transition: transform 0.3s ease; }
+        .side-drawer.open { transform: translateX(0); }
+        .overlay { opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .overlay.show { opacity: 1; visibility: visible; }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Mobile Overlay & Navigation (same as other pages) -->
+    <div id="overlay" class="overlay fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
+    <nav id="sideDrawer" class="side-drawer fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50 lg:transform-none lg:static lg:w-64">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-red-500 to-pink-600 rounded-full p-2">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">DMHLH</span>
+                </div>
+                <button onclick="closeSideDrawer()" class="text-gray-500 hover:text-gray-700 lg:hidden">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl p-4 mb-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold">AD</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800">Admin User</h3>
+                        <p class="text-sm text-gray-600">System Administrator</p>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <a href="admin-dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-home w-5"></i><span>Dashboard</span>
+                </a>
+                <a href="admin-users.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-users w-5"></i><span>User Management</span>
+                </a>
+                <a href="admin-content.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-folder w-5"></i><span>Content Management</span>
+                </a>
+                <a href="admin-analytics.html" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-chart-bar w-5"></i><span>Analytics</span>
+                </a>
+                <a href="admin-settings.html" class="flex items-center space-x-3 px-4 py-3 bg-red-50 text-red-700 rounded-lg">
+                    <i class="fas fa-cog w-5"></i><span>Settings</span>
+                </a>
+            </div>
+            <div class="absolute bottom-6 left-6 right-6">
+                <button onclick="window.location.href='login.html'" class="flex items-center space-x-3 w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg">
+                    <i class="fas fa-sign-out-alt w-5"></i><span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="lg:ml-64 min-h-screen">
+        <div class="bg-white shadow-sm border-b sticky top-0 z-30">
+            <div class="px-4 py-4 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button onclick="openSideDrawer()" class="text-gray-600 hover:text-gray-800 lg:hidden">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-cog text-orange-500"></i>
+                        <h1 class="text-xl font-bold text-gray-800">System Settings</h1>
+                    </div>
+                </div>
+                <div class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium hidden sm:block">
+                    <i class="fas fa-shield-alt text-xs mr-1"></i>Secure Configuration
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 max-w-7xl mx-auto">
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <button onclick="performMaintenance('cache')" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+                    <i class="fas fa-broom text-yellow-600 text-2xl mb-2"></i>
+                    <div class="font-semibold text-gray-800">Clear Cache</div>
+                    <div class="text-xs text-gray-600">System cleanup</div>
+                </button>
+                <button onclick="performMaintenance('backup')" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+                    <i class="fas fa-save text-blue-600 text-2xl mb-2"></i>
+                    <div class="font-semibold text-gray-800">Backup Now</div>
+                    <div class="text-xs text-gray-600">Create backup</div>
+                </button>
+                <button onclick="performMaintenance('optimize')" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+                    <i class="fas fa-database text-purple-600 text-2xl mb-2"></i>
+                    <div class="font-semibold text-gray-800">Optimize DB</div>
+                    <div class="text-xs text-gray-600">Database tuning</div>
+                </button>
+                <button onclick="toggleMaintenance()" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+                    <i class="fas fa-power-off text-red-600 text-2xl mb-2"></i>
+                    <div class="font-semibold text-gray-800">Maintenance</div>
+                    <div class="text-xs text-gray-600">System mode</div>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- General Settings -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">General Settings</h3>
+                    <form class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">System Name</label>
+                            <input type="text" value="DMHLH Platform" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Admin Email</label>
+                            <input type="email" value="admin@dmhlh.edu" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Session Timeout (minutes)</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="15">15 minutes</option>
+                                <option value="30" selected>30 minutes</option>
+                                <option value="60">1 hour</option>
+                                <option value="120">2 hours</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Default Language</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="en" selected>English</option>
+                                <option value="ms">Bahasa Malaysia</option>
+                                <option value="zh">中文</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg font-semibold">
+                            <i class="fas fa-save mr-2"></i>Save General Settings
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Security Settings</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-gray-800">Two-Factor Authentication</div>
+                                <div class="text-sm text-gray-600">Additional login security</div>
+                            </div>
+                            <button class="bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-semibold">Enabled</button>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-gray-800">Password Requirements</div>
+                                <div class="text-sm text-gray-600">Minimum 8 chars, special chars</div>
+                            </div>
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold">Strong</button>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-gray-800">Login Monitoring</div>
+                                <div class="text-sm text-gray-600">Track failed attempts</div>
+                            </div>
+                            <button class="bg-purple-500 text-white px-4 py-2 rounded-lg text-sm font-semibold">Active</button>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                            <div>
+                                <div class="font-medium text-gray-800">Session Security</div>
+                                <div class="text-sm text-gray-600">Automatic logout</div>
+                            </div>
+                            <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm font-semibold">Enabled</button>
+                        </div>
+                        <button onclick="updateSecurity()" class="w-full bg-red-600 hover:bg-red-700 text-white p-3 rounded-lg font-semibold">
+                            <i class="fas fa-shield-alt mr-2"></i>Update Security Policies
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Backup Settings -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Backup Configuration</h3>
+                    <form class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Backup Frequency</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="daily" selected>Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Backup Time</label>
+                            <input type="time" value="03:00" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Retention Period</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="7">7 days</option>
+                                <option value="30" selected>30 days</option>
+                                <option value="90">90 days</option>
+                                <option value="365">1 year</option>
+                            </select>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                                <div>
+                                    <div class="font-medium text-gray-800">Last Database Backup</div>
+                                    <div class="text-sm text-gray-600">Today 3:00 AM • 45.2 MB</div>
+                                </div>
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                <div>
+                                    <div class="font-medium text-gray-800">Last File Backup</div>
+                                    <div class="text-sm text-gray-600">Today 3:30 AM • 1.2 GB</div>
+                                </div>
+                                <i class="fas fa-check-circle text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg font-semibold">
+                            <i class="fas fa-calendar mr-2"></i>Update Backup Schedule
+                        </button>
+                    </form>
+                </div>
+
+                <!-- System Monitoring -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">System Monitoring</h3>
+                    <div class="space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-600">CPU Usage</span>
+                                <span class="font-medium">23%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-blue-500 h-3 rounded-full" style="width: 23%"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-600">Memory Usage</span>
+                                <span class="font-medium">67%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-yellow-500 h-3 rounded-full" style="width: 67%"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-600">Disk Usage</span>
+                                <span class="font-medium">34%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-green-500 h-3 rounded-full" style="width: 34%"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-600">Network Usage</span>
+                                <span class="font-medium">12%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-purple-500 h-3 rounded-full" style="width: 12%"></div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mt-4">
+                            <div class="text-center p-3 bg-blue-50 rounded-lg">
+                                <div class="font-bold text-blue-600">99.8%</div>
+                                <div class="text-xs text-gray-600">Uptime</div>
+                            </div>
+                            <div class="text-center p-3 bg-green-50 rounded-lg">
+                                <div class="font-bold text-green-600">1,247</div>
+                                <div class="text-xs text-gray-600">Active Users</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Application Settings -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm mt-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">Application Configuration</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-3">Features</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-700">User Registration</span>
+                                <input type="checkbox" checked class="w-4 h-4 text-blue-600">
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-700">Public Forum</span>
+                                <input type="checkbox" checked class="w-4 h-4 text-blue-600">
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-700">AI Chatbot</span>
+                                <input type="checkbox" checked class="w-4 h-4 text-blue-600">
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-700">Email Notifications</span>
+                                <input type="checkbox" checked class="w-4 h-4 text-blue-600">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-3">Limits</h4>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-sm text-gray-700">Max File Upload (MB)</label>
+                                <input type="number" value="10" class="w-full p-2 border rounded text-sm">
+                            </div>
+                            <div>
+                                <label class="text-sm text-gray-700">Session Duration (hours)</label>
+                                <input type="number" value="24" class="w-full p-2 border rounded text-sm">
+                            </div>
+                            <div>
+                                <label class="text-sm text-gray-700">Max Login Attempts</label>
+                                <input type="number" value="5" class="w-full p-2 border rounded text-sm">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-3">Maintenance</h4>
+                        <div class="space-y-3">
+                            <button onclick="clearLogs()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded text-sm">
+                                <i class="fas fa-trash mr-2"></i>Clear Logs
+                            </button>
+                            <button onclick="resetStats()" class="w-full bg-orange-500 hover:bg-orange-600 text-white p-2 rounded text-sm">
+                                <i class="fas fa-redo mr-2"></i>Reset Statistics
+                            </button>
+                            <button onclick="updateSystem()" class="w-full bg-green-500 hover:bg-green-600 text-white p-2 rounded text-sm">
+                                <i class="fas fa-sync mr-2"></i>Update System
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end">
+                    <button onclick="saveAllSettings()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold">
+                        <i class="fas fa-save mr-2"></i>Save All Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openSideDrawer() {
+            document.getElementById('sideDrawer').classList.add('open');
+            document.getElementById('overlay').classList.add('show');
+        }
+        function closeSideDrawer() {
+            document.getElementById('sideDrawer').classList.remove('open');
+            document.getElementById('overlay').classList.remove('show');
+        }
+        document.getElementById('overlay').addEventListener('click', closeSideDrawer);
+
+        function performMaintenance(type) {
+            const actions = {
+                cache: 'Cache cleared successfully!',
+                backup: 'Backup created successfully!',
+                optimize: 'Database optimized successfully!'
+            };
+            alert(`🔧 ${actions[type] || 'Maintenance completed!'}`);
+        }
+
+        function toggleMaintenance() {
+            if(confirm('Enable maintenance mode? This will prevent users from accessing the system.')) {
+                alert('🚧 Maintenance mode enabled. System is now offline for users.');
+            }
+        }
+
+        function updateSecurity() {
+            alert('🔒 Security policies updated successfully!');
+        }
+
+        function clearLogs() {
+            if(confirm('Clear all system logs? This action cannot be undone.')) {
+                alert('📝 System logs cleared successfully!');
+            }
+        }
+
+        function resetStats() {
+            if(confirm('Reset all statistics? This will clear analytics data.')) {
+                alert('📊 Statistics reset successfully!');
+            }
+        }
+
+        function updateSystem() {
+            if(confirm('Update system? This may take several minutes.')) {
+                alert('🔄 System update initiated. Check back in a few minutes.');
+            }
+        }
+
+        function saveAllSettings() {
+            alert('✅ All settings saved successfully!');
+        }
+    </script>
+</body>
+</html>
