@@ -375,6 +375,249 @@
                 </button>
             </div>
         </div>
+
+        <!-- Demo Section for Alternative Flows & Exceptions -->
+        <div class="bg-white rounded-3xl p-6 shadow-sm mt-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">🔧 Demo: Alternative Flows & Exceptions</h3>
+            <p class="text-gray-600 mb-6">Test various scenarios that can occur during booking and forum usage:</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Alternative Flows -->
+                <div class="border border-blue-200 rounded-xl p-4">
+                    <h4 class="font-semibold text-blue-800 mb-3">🔄 Alternative Flows</h4>
+                    <div class="space-y-2">
+                        <button onclick="demoSlotTaken()" class="w-full text-left p-3 bg-blue-50 hover:bg-blue-100 rounded-lg text-sm transition-all">
+                            <div class="font-medium text-blue-800">AF1: Slot No Longer Available</div>
+                            <div class="text-blue-600 text-xs">Someone else books the slot while you're selecting</div>
+                        </button>
+                        <button onclick="demoHarmfulContent()" class="w-full text-left p-3 bg-blue-50 hover:bg-blue-100 rounded-lg text-sm transition-all">
+                            <div class="font-medium text-blue-800">AF1: Harmful Content Detected</div>
+                            <div class="text-blue-600 text-xs">AI moderation flags inappropriate forum content</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Exceptions -->
+                <div class="border border-red-200 rounded-xl p-4">
+                    <h4 class="font-semibold text-red-800 mb-3">⚠️ Exception Flows</h4>
+                    <div class="space-y-2">
+                        <button onclick="demoNetworkError()" class="w-full text-left p-3 bg-red-50 hover:bg-red-100 rounded-lg text-sm transition-all">
+                            <div class="font-medium text-red-800">EF1: Network Error/Timeout</div>
+                            <div class="text-red-600 text-xs">Booking fails due to server/network issues</div>
+                        </button>
+                        <button onclick="demoNoCounsellor()" class="w-full text-left p-3 bg-red-50 hover:bg-red-100 rounded-lg text-sm transition-all">
+                            <div class="font-medium text-red-800">EF2: No Available Counsellor</div>
+                            <div class="text-red-600 text-xs">Selected time has no counsellor available</div>
+                        </button>
+                        <button onclick="demoForumUnavailable()" class="w-full text-left p-3 bg-red-50 hover:bg-red-100 rounded-lg text-sm transition-all">
+                            <div class="font-medium text-red-800">EF1: Forum Module Unavailable</div>
+                            <div class="text-red-600 text-xs">Forum system is down for maintenance</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AF1: Slot Taken Modal -->
+    <div id="slotTakenModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-exclamation-triangle text-white text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Selected Slot No Longer Available</h3>
+                <p class="text-gray-600">Another student has just booked this time slot while you were making your selection.</p>
+            </div>
+
+            <div class="bg-yellow-50 rounded-xl p-4 mb-6">
+                <div class="flex items-start space-x-2">
+                    <i class="fas fa-info-circle text-yellow-600 mt-1"></i>
+                    <div class="text-sm">
+                        <p class="font-medium text-gray-800 mb-2">Alternative Options:</p>
+                        <div class="space-y-2">
+                            <button onclick="suggestAlternativeSlot()" class="w-full text-left p-2 bg-white rounded border hover:bg-gray-50">
+                                <div class="font-medium text-blue-600">📅 Friday, Dec 27 - 3:00 PM</div>
+                                <div class="text-xs text-gray-600">Dr. Sarah Wilson available</div>
+                            </button>
+                            <button onclick="addToWaitlist()" class="w-full text-left p-2 bg-white rounded border hover:bg-gray-50">
+                                <div class="font-medium text-purple-600">⏰ Join Waitlist</div>
+                                <div class="text-xs text-gray-600">Get notified if slot becomes available</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex space-x-3">
+                <button onclick="closeSlotTakenModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold transition-all">
+                    Back to Calendar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EF1: Network Error Modal -->
+    <div id="networkErrorModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-wifi text-white text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Booking Failed</h3>
+                <p class="text-gray-600">Please try again later.</p>
+            </div>
+
+            <div class="bg-red-50 rounded-xl p-4 mb-6">
+                <div class="flex items-start space-x-2">
+                    <i class="fas fa-exclamation-circle text-red-600 mt-1"></i>
+                    <div class="text-sm">
+                        <p class="font-medium text-gray-800 mb-1">Error Details:</p>
+                        <p class="text-gray-600">The booking request failed due to a server/network issue. Your session details have been saved and you can try booking again.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <button onclick="retryBooking()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-all">
+                    <i class="fas fa-redo mr-2"></i>Try Again
+                </button>
+                <button onclick="closeNetworkErrorModal()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold transition-all">
+                    Return to Normal Flow
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EF2: No Available Counsellor Modal -->
+    <div id="noCounsellorModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-times text-white text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">No Counsellor Available</h3>
+                <p class="text-gray-600">No counsellor is available for the selected time.</p>
+            </div>
+
+            <div class="bg-orange-50 rounded-xl p-4 mb-6">
+                <div class="flex items-start space-x-2">
+                    <i class="fas fa-calendar-alt text-orange-600 mt-1"></i>
+                    <div class="text-sm">
+                        <p class="font-medium text-gray-800 mb-2">Available Alternatives:</p>
+                        <div class="space-y-2">
+                            <div class="p-2 bg-white rounded border">
+                                <div class="font-medium text-green-600">✅ Friday, Dec 27 - 10:00 AM</div>
+                                <div class="text-xs text-gray-600">Dr. James Lee available</div>
+                            </div>
+                            <div class="p-2 bg-white rounded border">
+                                <div class="font-medium text-green-600">✅ Friday, Dec 27 - 4:00 PM</div>
+                                <div class="text-xs text-gray-600">Dr. Sarah Wilson available</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex space-x-3">
+                <button onclick="selectAlternativeTime()" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition-all">
+                    Choose Alternative
+                </button>
+                <button onclick="closeNoCounsellorModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold transition-all">
+                    Return to Calendar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AF1: Harmful Content Demo Modal -->
+    <div id="harmfulContentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-lg w-full">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-shield-alt text-white text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Content Under Review</h3>
+                <p class="text-gray-600">Your post has been flagged for manual review by our moderation team.</p>
+            </div>
+
+            <!-- Simulated Forum Post -->
+            <div class="bg-gray-50 rounded-xl p-4 mb-6">
+                <div class="flex items-start space-x-3 mb-3">
+                    <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                        <span class="text-white text-sm font-semibold">ET</span>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-800">En Thong</div>
+                        <div class="text-xs text-gray-500">Student • Just now</div>
+                    </div>
+                </div>
+                <div class="bg-yellow-100 border border-yellow-300 rounded-lg p-3">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <i class="fas fa-exclamation-triangle text-yellow-600"></i>
+                        <span class="text-sm font-medium text-yellow-800">Content Hidden - Under Review</span>
+                    </div>
+                    <p class="text-sm text-gray-600 italic">This post has been hidden from public view while moderators review the content.</p>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 rounded-xl p-4 mb-6">
+                <div class="flex items-start space-x-2">
+                    <i class="fas fa-info-circle text-blue-600 mt-1"></i>
+                    <div class="text-sm">
+                        <p class="font-medium text-gray-800 mb-2">What happens next:</p>
+                        <ul class="text-gray-600 space-y-1">
+                            <li>• Faculty moderators will review your post</li>
+                            <li>• If approved, it will be published to the forum</li>
+                            <li>• If rejected, you'll be notified with feedback</li>
+                            <li>• Critical content may be escalated to Mental Health Professionals</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex space-x-3">
+                <button onclick="closeHarmfulContentModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold transition-all">
+                    Continue to Forum
+                </button>
+                <button onclick="editPost()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-all">
+                    Edit Post
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EF1: Forum Unavailable Modal -->
+    <div id="forumUnavailableModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-gradient-to-br from-gray-500 to-gray-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-tools text-white text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Forum Currently Unavailable</h3>
+                <p class="text-gray-600">Please try again later.</p>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-4 mb-6">
+                <div class="flex items-start space-x-2">
+                    <i class="fas fa-wrench text-gray-600 mt-1"></i>
+                    <div class="text-sm">
+                        <p class="font-medium text-gray-800 mb-1">System Status:</p>
+                        <p class="text-gray-600">The forum is currently undergoing maintenance. Normal service will resume shortly.</p>
+                        <p class="text-xs text-gray-500 mt-2">Expected duration: 15-30 minutes</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <button onclick="tryForumAgain()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-all">
+                    Try Again
+                </button>
+                <button onclick="closeForumUnavailableModal()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold transition-all">
+                    Return to Dashboard
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -505,6 +748,169 @@
         document.addEventListener('DOMContentLoaded', function() {
             selectDate('27');
         });
+
+        // Demo Functions for Alternative Flows & Exceptions
+        
+        // AF1: Slot No Longer Available
+        function demoSlotTaken() {
+            document.getElementById('slotTakenModal').classList.remove('hidden');
+        }
+        
+        function closeSlotTakenModal() {
+            document.getElementById('slotTakenModal').classList.add('hidden');
+        }
+        
+        function suggestAlternativeSlot() {
+            closeSlotTakenModal();
+            // Simulate selecting alternative slot
+            selectDate('27');
+            setTimeout(() => {
+                // Auto-select 3:00 PM slot
+                document.querySelectorAll('.time-slot').forEach(slot => {
+                    if (slot.textContent.includes('3:00 PM')) {
+                        slot.click();
+                    }
+                });
+                alert('✅ Alternative slot selected: Friday, Dec 27 at 3:00 PM with Dr. Sarah Wilson');
+            }, 500);
+        }
+        
+        function addToWaitlist() {
+            closeSlotTakenModal();
+            alert('📋 You have been added to the waitlist. You\'ll be notified if this time slot becomes available again.');
+        }
+
+        // EF1: Network Error or Server Timeout
+        function demoNetworkError() {
+            document.getElementById('networkErrorModal').classList.remove('hidden');
+        }
+        
+        function closeNetworkErrorModal() {
+            document.getElementById('networkErrorModal').classList.add('hidden');
+        }
+        
+        function retryBooking() {
+            closeNetworkErrorModal();
+            // Simulate successful retry
+            setTimeout(() => {
+                alert('✅ Booking successful! Your session has been confirmed.');
+            }, 1000);
+        }
+
+        // EF2: No Available Counsellor
+        function demoNoCounsellor() {
+            document.getElementById('noCounsellorModal').classList.remove('hidden');
+        }
+        
+        function closeNoCounsellorModal() {
+            document.getElementById('noCounsellorModal').classList.add('hidden');
+        }
+        
+        function selectAlternativeTime() {
+            closeNoCounsellorModal();
+            // Simulate selecting alternative time
+            setTimeout(() => {
+                alert('✅ Alternative time selected: Friday, Dec 27 at 10:00 AM with Dr. James Lee');
+            }, 500);
+        }
+
+        // AF1: Harmful Content Detected (Forum)
+        function demoHarmfulContent() {
+            document.getElementById('harmfulContentModal').classList.remove('hidden');
+        }
+        
+        function closeHarmfulContentModal() {
+            document.getElementById('harmfulContentModal').classList.add('hidden');
+            // Return to Normal Flow Step 8 as per documentation
+            alert('🔄 Returning to forum posting flow...');
+        }
+        
+        function editPost() {
+            closeHarmfulContentModal();
+            alert('✏️ Editing post to remove flagged content. You can now resubmit your post.');
+        }
+
+        // EF1: Forum Module Unavailable
+        function demoForumUnavailable() {
+            document.getElementById('forumUnavailableModal').classList.remove('hidden');
+        }
+        
+        function closeForumUnavailableModal() {
+            document.getElementById('forumUnavailableModal').classList.add('hidden');
+        }
+        
+        function tryForumAgain() {
+            closeForumUnavailableModal();
+            // Return to Normal Flow Step 1 as per documentation
+            setTimeout(() => {
+                alert('⚠️ Forum is still unavailable. Please try again in a few minutes.');
+            }, 1000);
+        }
+
+        // Override confirmBooking to add demo scenarios
+        const originalConfirmBooking = confirmBooking;
+        function confirmBooking() {
+            // Randomly trigger alternative flows/exceptions for demo
+            const demoScenario = Math.random();
+            
+            if (demoScenario < 0.15) {
+                // 15% chance: Slot taken while confirming
+                closeConfirmationModal();
+                setTimeout(() => {
+                    demoSlotTaken();
+                }, 500);
+            } else if (demoScenario < 0.25) {
+                // 10% chance: Network error
+                closeConfirmationModal();
+                setTimeout(() => {
+                    demoNetworkError();
+                }, 500);
+            } else if (demoScenario < 0.35) {
+                // 10% chance: No counsellor available
+                closeConfirmationModal();
+                setTimeout(() => {
+                    demoNoCounsellor();
+                }, 500);
+            } else {
+                // 65% chance: Normal successful booking
+                originalConfirmBooking();
+            }
+        }
+
+        // Post-conditions logging (as per use case documentation)
+        function logBookingAction(action, details) {
+            console.log(`📋 Post-condition: ${action}`, {
+                timestamp: new Date().toISOString(),
+                user: 'En Thong (ST2024-001)',
+                action: action,
+                details: details,
+                sessionData: {
+                    counsellor: selectedCounsellor,
+                    date: selectedDate,
+                    time: selectedTime
+                }
+            });
+        }
+
+        // Enhanced confirmBooking with logging
+        window.confirmBooking = function() {
+            if (Math.random() < 0.15) {
+                closeConfirmationModal();
+                logBookingAction('SLOT_TAKEN', 'Selected slot was booked by another student');
+                setTimeout(() => demoSlotTaken(), 500);
+            } else if (Math.random() < 0.25) {
+                closeConfirmationModal();
+                logBookingAction('NETWORK_ERROR', 'Booking failed due to server/network timeout');
+                setTimeout(() => demoNetworkError(), 500);
+            } else if (Math.random() < 0.35) {
+                closeConfirmationModal();
+                logBookingAction('NO_COUNSELLOR', 'No counsellor available for selected time');
+                setTimeout(() => demoNoCounsellor(), 500);
+            } else {
+                logBookingAction('BOOKING_SUCCESS', 'Session successfully booked and confirmed');
+                originalConfirmBooking();
+            }
+        };
     </script>
 </body>
 </html> 
